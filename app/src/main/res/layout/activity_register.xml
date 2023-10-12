@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.RegisterActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <View
+        android:id="@+id/rectangle_1"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_220sdp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="@dimen/_minus60sdp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/_minus60sdp"
+        android:background="@drawable/rectangle_1"
+        />
+
+    <View
+        android:id="@+id/rectangle_2"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_220sdp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/_minus10sdp"
+        android:layout_marginTop="@dimen/_31sdp"
+        android:background="@drawable/rectangle_2" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image_register"
+        android:layout_width="85dp"
+        android:layout_height="91dp"
+        android:layout_below="@id/registertv1"
+        android:layout_marginLeft="@dimen/_21sdp"
+        android:src="@drawable/default_avata" />
+    <TextView
+        android:id="@+id/registertv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rectangle_1"
+        android:layout_marginLeft="@dimen/_21sdp"
+        android:layout_marginTop="@dimen/_minus30sdp"
+        android:text="@string/register"
+        android:textSize="@dimen/_30sdp"
+        android:textColor="@color/blue"
+        android:fontFamily="@font/nunito_bold"
+        android:gravity="top"
+        />
+    <TextView
+        android:id="@+id/emailtv"
+        android:text="@string/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profile_image_register"
+        android:layout_marginLeft="@dimen/_21sdp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:textSize="@dimen/_15sdp"
+        android:textColor="@color/blue"
+        android:fontFamily="@font/nunito_bold"
+        />
+
+    <EditText
+        android:id="@+id/editTextEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emailtv"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_30sdp"
+        android:background="@drawable/round_edittext"
+
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/passwordtv"
+        android:text="@string/password"
+        android:layout_below="@id/editTextEmail"
+        android:layout_marginLeft="@dimen/_21sdp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:textSize="@dimen/_15sdp"
+        android:textColor="@color/blue"
+        android:fontFamily="@font/nunito_bold"
+        />
+
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/passwordtv"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_30sdp"
+        android:background="@drawable/round_edittext"
+
+        android:inputType="textPassword"
+        android:minHeight="48dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/forgotpasswordtv"
+        android:text="@string/repassword"
+        android:layout_below="@id/editTextPassword"
+
+        android:layout_marginLeft="@dimen/_21sdp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:textSize="@dimen/_15sdp"
+        android:textColor="@color/blue"
+        android:fontFamily="@font/nunito_bold"
+        />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/repassword"
+            android:background="@drawable/round_edittext"
+            android:layout_below="@id/forgotpasswordtv"
+            android:layout_marginLeft="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_30sdp"
+            android:inputType="textPassword"
+            android:minHeight="48dp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayoutLogin"
+        android:layout_below="@id/repassword"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/_20sdp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/donthaveaccounttv"
+            android:text="@string/login_with"
+            android:textSize="@dimen/_15sdp"
+            android:textColor="@color/blue"/>
+
+        <ImageButton
+            android:id="@+id/facebook_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:background="@drawable/logos_facebook" />
+    </LinearLayout>
+    <View
+        android:id="@+id/rectangle_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayoutLogin"
+        android:layout_alignParentBottom="true"
+
+        android:background="@drawable/rectangle_3"
+        />
+
+        <TextView
+            android:id="@+id/alreadyMember"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/_21sdp"
+            android:layout_marginBottom="-1dp"
+            android:fontFamily="@font/nunito_light"
+            android:text="@string/alreadymember"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_15sdp" />
+
+        <TextView
+        android:id="@+id/registertv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/alreadyMember"
+        android:layout_marginLeft="@dimen/_3sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:text="@string/login"
+        android:textSize="@dimen/_15sdp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/nunito_bold"
+        />
+    <Button
+        android:id="@+id/buttonRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="@string/register"
+        android:textColor="@color/white"
+        android:background="@drawable/transparent_button"
+        android:layout_marginRight="@dimen/_30sdp"
+        android:layout_marginBottom="@dimen/_60sdp"/>
+    </RelativeLayout>
+</androidx.core.widget.NestedScrollView>

@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">GChat</string>
+    <string name="facebook_app_id">746663553673574</string>
+    <string name="fb_login_protocol_scheme">fb746663553673574</string>
+    <string name="facebook_client_token">e5bb36829f35a2d56e5c7d35cce244f7</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="dont_have_an_account">Don\'t have an account</string>
+    <string name="login_with">Login with</string>
+    <string name="new_here">New Here?</string>
+    <string name="register">Register</string>
+    <string name="repassword">Repassword</string>
+    <string name="alreadymember">Already member?</string>
+    <string name="friends">Friends</string>
+    <string name="groups">Groups</string>
+    <string name="info">Personal Information</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="username">Username</string>
+    <string name="change_password">Change Password</string>
+    <string name="logout">Sign out</string>
 </resources>
