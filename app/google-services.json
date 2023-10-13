@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "415852211071",
+    "firebase_url": "https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "gchat-af243",
+    "storage_bucket": "gchat-af243.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:415852211071:android:f5a57be9d77ef918aec84a",
+        "android_client_info": {
+          "package_name": "com.phucanh.gchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "415852211071-6dtvh0fbmj7v00tr7l46ssp14vml2dp1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu1mgjxvFgaAk9PcIQ4cY73v_kRBzgHNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "415852211071-6dtvh0fbmj7v00tr7l46ssp14vml2dp1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
