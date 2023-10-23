@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/friendFragment"
-        android:name="com.phucanh.gchat.ui.fragments.friend.FriendFragment"
+        android:name="com.phucanh.gchat.ui.fragments.FriendFragment"
         android:label="fragment_friend"
         tools:layout="@layout/fragment_friend" />
     <fragment
         android:id="@+id/groupFragment"
-        android:name="com.phucanh.gchat.ui.fragments.group.GroupFragment"
+        android:name="com.phucanh.gchat.ui.fragments.GroupFragment"
         android:label="fragment_group"
         tools:layout="@layout/fragment_group" />
     <fragment
         android:id="@+id/userProfileFragment"
-        android:name="com.phucanh.gchat.ui.fragments.userprofile.UserProfileFragment"
+        android:name="com.phucanh.gchat.ui.fragments.UserProfileFragment"
         android:label="UserProfileFragment"
         tools:layout="@layout/fragment_user_profile"/>
 </navigation>

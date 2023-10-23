@@ -28,15 +28,44 @@
         android:layout_marginLeft="@dimen/_minus10sdp"
         android:layout_marginTop="@dimen/_31sdp"
         android:background="@drawable/rectangle_2" />
+        <LinearLayout
+            android:id="@+id/linearLayoutavt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rectangle_1"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayoutavt1"
+                android:layout_gravity="center">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_image_register"
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp"
+                    android:layout_below="@id/registertv1"
+                    
+                    android:layout_marginTop="2dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/default_avata" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_minus20sdp"
+                    android:layout_marginTop="@dimen/_minus20sdp"
+                    android:layout_gravity="bottom"
+                    android:src="@drawable/ic_camera" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image_register"
-        android:layout_width="85dp"
-        android:layout_height="91dp"
-        android:layout_below="@id/registertv1"
-        android:layout_marginLeft="@dimen/_21sdp"
-        android:src="@drawable/default_avata" />
-    <TextView
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+
+
+        <TextView
         android:id="@+id/registertv1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,24 +78,48 @@
         android:fontFamily="@font/nunito_bold"
         android:gravity="top"
         />
-    <TextView
-        android:id="@+id/emailtv"
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/usernametv"
+            android:text="@string/username"
+            android:layout_below="@id/linearLayoutavt"
+            android:layout_marginLeft="@dimen/_21sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:textSize="@dimen/_15sdp"
+            android:textColor="@color/blue"
+            android:fontFamily="@font/nunito_bold"
+            />
+        <EditText
+            android:id="@+id/editTextUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/usernametv"
+            android:layout_marginLeft="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_30sdp"
+            android:background="@drawable/round_edittext"
+
+            android:inputType="textEmailAddress"
+            android:minHeight="48dp" />
+        <TextView
+        android:id="@+id/emailtv1"
         android:text="@string/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/profile_image_register"
+        android:layout_below="@id/editTextUsername"
         android:layout_marginLeft="@dimen/_21sdp"
         android:layout_marginTop="@dimen/_3sdp"
         android:textSize="@dimen/_15sdp"
         android:textColor="@color/blue"
         android:fontFamily="@font/nunito_bold"
         />
-
     <EditText
         android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/emailtv"
+        android:layout_below="@id/emailtv1"
         android:layout_marginLeft="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_5sdp"
         android:layout_marginRight="@dimen/_30sdp"
@@ -187,10 +240,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_below="@+id/rectangle_3"
         android:text="@string/register"
         android:textColor="@color/white"
         android:background="@drawable/transparent_button"
         android:layout_marginRight="@dimen/_30sdp"
-        android:layout_marginBottom="@dimen/_60sdp"/>
+        android:layout_marginTop="@dimen/_minus10sdp"/>
     </RelativeLayout>
 </androidx.core.widget.NestedScrollView>

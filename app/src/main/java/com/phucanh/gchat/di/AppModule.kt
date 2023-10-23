@@ -2,7 +2,7 @@ package com.phucanh.gchat.di
 
 import android.app.Application
 import android.content.Context
-import com.phucanh.gchat.ui.fragments.userprofile.UserProfileViewModelFactory
+import com.phucanh.gchat.viewModels.UserProfileViewModelFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

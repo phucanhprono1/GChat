@@ -1,4 +1,4 @@
-package com.phucanh.gchat.ui.fragments.friend
+package com.phucanh.gchat.viewModels
 
 import androidx.lifecycle.ViewModel
 

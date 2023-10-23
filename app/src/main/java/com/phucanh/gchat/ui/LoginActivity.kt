@@ -1,22 +1,17 @@
 package com.phucanh.gchat.ui
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-
+import androidx.appcompat.app.AppCompatActivity
 import com.facebook.AccessToken
-
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookSdk
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -26,15 +21,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.initialize
 import com.google.firebase.messaging.FirebaseMessaging
 import com.phucanh.gchat.databinding.ActivityLoginBinding
 import com.phucanh.gchat.models.User
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import com.phucanh.gchat.utils.StaticConfig
+import java.util.regex.Pattern
 
 class LoginActivity : AppCompatActivity() {
 
@@ -44,6 +35,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var firebaseAuthListener: FirebaseAuth.AuthStateListener
     private lateinit var loginManager: LoginManager
     private lateinit var us: User
+    private val VALID_EMAIL_ADDRESS_REGEX =
+        Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityLoginBinding.inflate(layoutInflater)
@@ -51,6 +44,33 @@ class LoginActivity : AppCompatActivity() {
         mAuth = Firebase.auth
         FacebookSdk.sdkInitialize(applicationContext)
 
+        //Login thuong
+        binding.buttonSignIn.setOnClickListener {
+            val email = binding.editTextEmail.text.toString()
+            val password = binding.editTextPassword.text.toString()
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please enter text in email/pw", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (!VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()) {
+                Toast.makeText(this, "Please enter valid email", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "signInWithEmail:success")
+                        val user = mAuth.currentUser
+                        updateUI(user)
+                    } else {
+                        Log.w(TAG, "signInWithEmail:failure", task.exception)
+                        Toast.makeText(this, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show()
+                        updateUI(null)
+                    }
+                }
+        }
+        //Facebook Login
         mCallbackManager = CallbackManager.Factory.create()
         loginManager = LoginManager.getInstance()
         firebaseAuthListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
@@ -120,6 +140,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateUI(user: FirebaseUser?) {
+        StaticConfig.UID = user!!.uid
         val intent = Intent(this@LoginActivity, MainActivity::class.java)
         val usersRef = FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("users")
         val userId = mAuth.currentUser!!.uid
@@ -158,11 +179,7 @@ class LoginActivity : AppCompatActivity() {
         // Pass the activity result back to the Facebook SDK
         mCallbackManager.onActivityResult(requestCode, resultCode, data)
     }
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        // Pass the activity result back to the Facebook SDK
-//        mCallbackManager.onActivityResult(requestCode, resultCode, data)
-//    }
+
 
     override fun onStart() {
         super.onStart()

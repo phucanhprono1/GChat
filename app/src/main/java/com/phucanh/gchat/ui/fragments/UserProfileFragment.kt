@@ -1,4 +1,4 @@
-package com.phucanh.gchat.ui.fragments.userprofile
+package com.phucanh.gchat.ui.fragments
 
 import android.content.Context
 import android.content.DialogInterface
@@ -15,20 +15,22 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.RequestOptions
 import com.facebook.login.LoginManager
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.phucanh.gchat.R
 import com.phucanh.gchat.databinding.FragmentUserProfileBinding
 import com.phucanh.gchat.models.Configuration
 import com.phucanh.gchat.models.User
+import com.phucanh.gchat.ui.EditProfileActivity
 import com.phucanh.gchat.ui.LoginActivity
 import com.phucanh.gchat.ui.MainActivity
+import com.phucanh.gchat.viewModels.UserProfileViewModelFactory
+import com.phucanh.gchat.viewModels.UserProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 @AndroidEntryPoint
@@ -67,7 +69,10 @@ class UserProfileFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 myAccount = snapshot.getValue(User::class.java)!!
                 userInfoAdapter.updateData(viewModel.listConfig(myAccount))
-                Glide.with(requireContext()).load(myAccount.avata).into(binding.imgAvatar)
+                Glide.with(requireContext())
+                    .load(myAccount.avata)
+                    .apply (RequestOptions().transform(CircleCrop()))
+                    .into(binding.imgAvatar)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -91,7 +96,7 @@ class UserProfileFragment : Fragment() {
             holder.label.text = config.label
             holder.value.text = config.value
             holder.icon.setImageResource(config.icon)
-            holder.icon.setOnClickListener {
+            holder.itemView.setOnClickListener {
                 if (config.label == getString(R.string.logout)) {
                     FirebaseAuth.getInstance().signOut()
                     LoginManager.getInstance().logOut()
@@ -114,6 +119,11 @@ class UserProfileFragment : Fragment() {
                         }
                         .setNegativeButton(android.R.string.cancel) { dialogInterface: DialogInterface, i: Int -> dialogInterface.dismiss() }
                         .show()
+                }
+                if (config.label == getString(R.string.change_profile)) {
+                    val intent = Intent(requireContext(), EditProfileActivity::class.java)
+                    intent.putExtra("uid", myAccount.id)
+                    startActivity(intent)
                 }
             }
         }

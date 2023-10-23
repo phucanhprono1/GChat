@@ -1,4 +1,4 @@
-package com.phucanh.gchat.ui.fragments.friend
+package com.phucanh.gchat.ui.fragments
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -7,25 +7,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.phucanh.gchat.R
+import com.phucanh.gchat.viewModels.GroupViewModel
 
-class FriendFragment : Fragment() {
+class GroupFragment : Fragment() {
 
     companion object {
-        fun newInstance() = FriendFragment()
+        fun newInstance() = GroupFragment()
     }
 
-    private lateinit var viewModel: FriendViewModel
+    private lateinit var viewModel: GroupViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_friend, container, false)
+        return inflater.inflate(R.layout.fragment_group, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(FriendViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(GroupViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

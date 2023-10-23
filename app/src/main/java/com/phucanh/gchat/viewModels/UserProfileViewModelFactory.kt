@@ -1,4 +1,4 @@
-package com.phucanh.gchat.ui.fragments.userprofile
+package com.phucanh.gchat.viewModels
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

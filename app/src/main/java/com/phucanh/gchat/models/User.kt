@@ -1,11 +1,14 @@
 package com.phucanh.gchat.models
 
-open class User {
+import android.os.Parcel
+import android.os.Parcelable
+
+open class User:Parcelable {
     var name: String? = null
     var email: String? = null
     var avata: String? = null
     var id: String? = null
-    var joinedDate = 0L
+    var joinedDate:String? = null
     var fcmToken: String? = null
     var message: Message? = null
     var status: Status? = null
@@ -32,5 +35,13 @@ open class User {
         message?.idSender = "0"
         message?.text = ""
         message?.timestamp = 0
+    }
+
+    override fun describeContents(): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun writeToParcel(p0: Parcel, p1: Int) {
+        TODO("Not yet implemented")
     }
 }

@@ -1,4 +1,4 @@
-package com.phucanh.gchat.ui.fragments.userprofile
+package com.phucanh.gchat.viewModels
 
 
 import android.content.Context
@@ -14,7 +14,9 @@ class UserProfileViewModel(private val context: Context) : ViewModel() {
         return listOf(
             Configuration(R.mipmap.ic_account_box, context.getString(R.string.username), myAccount.name!!),
             Configuration(R.mipmap.ic_email, context.getString(R.string.email), myAccount.email!!),
+            Configuration(R.drawable.ic_friend_request, context.getString(R.string.friend_request),""),
             Configuration(R.mipmap.ic_restore, context.getString(R.string.change_password), ""),
+            Configuration(R.drawable.ic_edit_profile, context.getString(R.string.change_profile), ""),
             Configuration(R.drawable.ic_log_out, context.getString(R.string.logout), "")
         )
     }
