@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.EditProfileActivity">
+    android:orientation="vertical"
+    tools:context=".ui.AddInfoActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,101 +24,24 @@
                 android:layout_centerInParent="true"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/linear_layout_avatar_edit_profile"
-                    android:layout_gravity="center">
+                <ImageView
+                    android:id="@+id/img_avatar_add_info"
+                    android:layout_width="@dimen/_104sdp"
+                    android:layout_height="@dimen/_104sdp"
+                    android:layout_gravity="center"
+                    android:background="#00000000"
+                    android:src="@drawable/default_avata" />
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/profile_image_edit_profile"
-                        android:layout_width="@dimen/_100sdp"
-                        android:layout_height="@dimen/_100sdp"
-                        android:layout_below="@id/registertv1"
-
-                        android:layout_marginTop="2dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/default_avata" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/_minus20sdp"
-                        android:layout_marginTop="@dimen/_minus20sdp"
-                        android:layout_gravity="bottom"
-                        android:src="@drawable/ic_camera" />
-
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/old_info_edit_profile_name"
+                <TextView
+                    android:id="@+id/tv_username_add_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/tv_username_edit_info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:layout_marginTop="@dimen/_15sdp"
-                        android:textColor="@android:color/black"
-                        android:textSize="24sp" />
-                    <ImageButton
-                        android:id="@+id/btn_edit_username_edit_info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_edit_profile"
-                        android:layout_marginLeft="@dimen/_10sdp"
-                        android:layout_marginTop="@dimen/_15sdp"
-                        android:background="@drawable/transparent_button"
-                        />
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/new_info_edit_profile_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-                    <EditText
-                        android:id="@+id/edtext_username_edit_info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:layout_marginTop="@dimen/_15sdp"
-                        android:textColor="@android:color/black"
-                        android:textSize="24sp" />
-                    <ImageButton
-                        android:id="@+id/btn_done_username_edit_info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/button_done"
-                        android:layout_marginLeft="@dimen/_10sdp"
-                        android:layout_marginTop="@dimen/_15sdp"
-                        android:background="@drawable/transparent_button"
-                        />
-                </LinearLayout>
-
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:textColor="@android:color/black"
+                    android:textSize="24sp" />
             </LinearLayout>
         </RelativeLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/join_date"
-            android:textSize="@dimen/_10sdp"
-            android:layout_marginStart="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:textColor="@color/blue"
-            android:fontFamily="@font/nunito_bold" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_join_date_edit_profile"
-            android:textSize="@dimen/_10sdp"
-            android:layout_marginStart="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/nunito_light" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -139,7 +64,7 @@
                 android:layout_marginStart="@dimen/_10sdp" />
 
             <EditText
-                android:id="@+id/et_birthday_edit_info"
+                android:id="@+id/et_birthday_add_info"
                 android:layout_width="@dimen/_150sdp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
@@ -171,7 +96,7 @@
                 android:layout_marginStart="@dimen/_10sdp" />
 
             <EditText
-                android:id="@+id/et_phone_edit_info"
+                android:id="@+id/et_phone_add_info"
                 android:layout_width="@dimen/_150sdp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
@@ -199,7 +124,7 @@
                 android:layout_marginStart="@dimen/_10sdp" />
 
             <EditText
-                android:id="@+id/et_address_edit_info"
+                android:id="@+id/et_address_add_info"
                 android:layout_width="@dimen/_150sdp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
@@ -226,12 +151,13 @@
                 android:src="@drawable/ic_email"
                 android:layout_marginStart="@dimen/_10sdp" />
 
-            <TextView
-                android:id="@+id/et_email_edit_info"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/et_email_add_info"
+                android:layout_width="@dimen/_150sdp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
-                />
+                android:inputType="text"
+                android:focusable="false" />
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
@@ -254,7 +180,7 @@
                 android:layout_marginStart="@dimen/_10sdp" />
 
             <EditText
-                android:id="@+id/self_description_edit_info"
+                android:id="@+id/self_description_add_info"
                 android:layout_width="@dimen/_150sdp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/_10sdp"
@@ -269,8 +195,10 @@
             android:background="@drawable/transparent_button"
             android:textColor="@color/blue"
             android:fontFamily="@font/nunito_bold"
-            android:id="@+id/btn_save_edit_info"
+            android:id="@+id/btn_save_add_info"
             android:drawableRight="@drawable/button_done"
             />
     </LinearLayout>
+
+
 </androidx.core.widget.NestedScrollView>

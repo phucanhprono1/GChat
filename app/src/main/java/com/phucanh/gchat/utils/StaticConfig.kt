@@ -14,13 +14,12 @@ object StaticConfig {
     var EMAIL = ""
     var NAME = ""
     var AVATA = ""
-    var CITY = ""
-    var COUNTRY = ""
-    var PROFESSION = ""
+    var ADDRESS =""
+    var PHONENUMBER=""
+    var BIRTHDAY=""
+    var JOINEDDATE=""
     var BIO = ""
 
-    // TODO only use this UID for debug mode
-    // var UID = "6kU0SbJPF5QJKZTfvW1BqKolrx22"
     const val INTENT_KEY_CHAT_FRIEND = "friendname"
     const val INTENT_KEY_CHAT_AVATA = "friendavata"
     const val INTENT_KEY_CHAT_ID = "friendid"

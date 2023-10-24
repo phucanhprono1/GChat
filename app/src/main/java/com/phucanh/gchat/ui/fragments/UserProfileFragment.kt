@@ -64,20 +64,24 @@ class UserProfileFragment : Fragment() {
         binding.infoRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.infoRecyclerView.adapter = userInfoAdapter
         mAuth = FirebaseAuth.getInstance()
-        viewModel.userDB.child(mAuth.currentUser!!.uid).addValueEventListener(object :
-            ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                myAccount = snapshot.getValue(User::class.java)!!
-                userInfoAdapter.updateData(viewModel.listConfig(myAccount))
-                Glide.with(requireContext())
-                    .load(myAccount.avata)
-                    .apply (RequestOptions().transform(CircleCrop()))
-                    .into(binding.imgAvatar)
-            }
+        if(mAuth.currentUser!=null){
+            viewModel.userDB.child(mAuth.currentUser!!.uid).addValueEventListener(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    myAccount = snapshot.getValue(User::class.java)!!
+                    binding.tvUsername.text = myAccount.name
+                    userInfoAdapter.updateData(viewModel.listConfig(myAccount))
+                    Glide.with(requireContext())
+                        .load(myAccount.avata)
+                        .apply (RequestOptions().transform(CircleCrop()))
+                        .into(binding.imgAvatar)
+                }
 
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                }
+            })
+        }
+
 
     }
     inner class UserInfoAdapter(private var profileConfig: List<Configuration>) : RecyclerView.Adapter<UserInfoAdapter.ViewHolder>() {

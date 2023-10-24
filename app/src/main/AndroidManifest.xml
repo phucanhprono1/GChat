@@ -37,6 +37,9 @@
         android:theme="@style/Theme.GChat"
         tools:targetApi="31">
         <activity
+            android:name=".ui.AddInfoActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.ForgotPasswordActivity"
             android:exported="false" />
         <activity

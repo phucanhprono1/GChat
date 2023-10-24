@@ -25,4 +25,10 @@
     <string name="change_profile">Change profile</string>
     <string name="friend_request">Friend Requests</string>
     <string name="choose_camera_from">Choose camera from</string>
+    <string name="birthday">Date of birth</string>
+    <string name="phone">Phone Number</string>
+    <string name="address">Address</string>
+    <string name="self_introduction">Bio</string>
+    <string name="save">Save</string>
+    <string name="join_date">Joined Date</string>
 </resources>

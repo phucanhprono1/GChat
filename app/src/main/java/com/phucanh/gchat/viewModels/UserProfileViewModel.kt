@@ -12,7 +12,6 @@ import com.phucanh.gchat.models.User
 class UserProfileViewModel(private val context: Context) : ViewModel() {
     fun listConfig(myAccount: User): List<Configuration> {
         return listOf(
-            Configuration(R.mipmap.ic_account_box, context.getString(R.string.username), myAccount.name!!),
             Configuration(R.mipmap.ic_email, context.getString(R.string.email), myAccount.email!!),
             Configuration(R.drawable.ic_friend_request, context.getString(R.string.friend_request),""),
             Configuration(R.mipmap.ic_restore, context.getString(R.string.change_password), ""),

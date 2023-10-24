@@ -21,7 +21,11 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.OnProgressListener
 import com.google.firebase.storage.StorageReference
@@ -31,6 +35,9 @@ import com.phucanh.gchat.databinding.ActivityRegisterBinding
 import com.phucanh.gchat.models.User
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import java.util.regex.Pattern
 
 class RegisterActivity : AppCompatActivity() {
@@ -100,7 +107,6 @@ class RegisterActivity : AppCompatActivity() {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         saveUserToFirebase(username, email)
-                        goToMainActivity()
                     } else {
                         Toast.makeText(this@RegisterActivity, "Register failed. Please try again later.", Toast.LENGTH_SHORT).show()
                     }
@@ -240,16 +246,29 @@ class RegisterActivity : AppCompatActivity() {
             })
         }
     }
-
+    fun getCurrentDate(): String {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        return dateFormat.format(calendar.time)
+    }
     private fun saveUserToFirebase(username: String, email: String) {
         val usersRef = FirebaseDatabase.getInstance(getString(R.string.firebase_database_url)).reference.child("users")
         val userId = mAuth.currentUser!!.uid
 
         val user = User(userId, username, email, avtPath)
-        usersRef.child(userId).setValue(user)
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val fcmToken = task.result
+                    user.fcmToken = fcmToken
+                    user.joinedDate = getCurrentDate()
+                    usersRef.child(userId).setValue(user)
+                }
+                goToAddInfo()
+            }
     }
-    private fun goToMainActivity() {
-        val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+    private fun goToAddInfo() {
+        val intent = Intent(this@RegisterActivity, AddInfoActivity::class.java)
         startActivity(intent)
         finish()
     }

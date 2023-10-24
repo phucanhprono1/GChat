@@ -25,6 +25,9 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.phucanh.gchat.databinding.ActivityLoginBinding
 import com.phucanh.gchat.models.User
 import com.phucanh.gchat.utils.StaticConfig
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import java.util.regex.Pattern
 
 class LoginActivity : AppCompatActivity() {
@@ -57,16 +60,12 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
+                .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Log.d(TAG, "signInWithEmail:success")
                         val user = mAuth.currentUser
                         updateUI(user)
                     } else {
-                        Log.w(TAG, "signInWithEmail:failure", task.exception)
-                        Toast.makeText(this, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show()
-                        updateUI(null)
+                        Toast.makeText(this@LoginActivity, "Incorrect email or password.", Toast.LENGTH_SHORT).show()
                     }
                 }
         }
@@ -138,7 +137,11 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
     }
-
+    fun getCurrentDate(): String {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        return dateFormat.format(calendar.time)
+    }
     private fun updateUI(user: FirebaseUser?) {
         StaticConfig.UID = user!!.uid
         val intent = Intent(this@LoginActivity, MainActivity::class.java)
@@ -158,6 +161,7 @@ class LoginActivity : AppCompatActivity() {
                 usersRef.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (!snapshot.exists()) {
+                            us.joinedDate = getCurrentDate()
                             usersRef.child(userId).setValue(us)
                         } else {
                             // Tài khoản đã tồn tại, cập nhật FCM token

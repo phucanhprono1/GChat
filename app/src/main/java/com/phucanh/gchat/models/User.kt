@@ -12,7 +12,10 @@ open class User:Parcelable {
     var fcmToken: String? = null
     var message: Message? = null
     var status: Status? = null
-
+    var dob: String? = null
+    var address: String? = null
+    var phonenumber: String? = null
+    var bio: String? = null
     constructor(id: String?, name: String?, email: String?, avt: String?) {
         this.id = id
         this.name = name
