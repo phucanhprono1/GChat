@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/friendFragment"
-        android:name="com.phucanh.gchat.ui.fragments.FriendFragment"
+        android:name="com.phucanh.gchat.ui.fragments.friend.FriendFragment"
         android:label="fragment_friend"
         tools:layout="@layout/fragment_friend" />
     <fragment

@@ -33,18 +33,22 @@ import com.google.firebase.storage.UploadTask
 import com.phucanh.gchat.R
 import com.phucanh.gchat.databinding.ActivityRegisterBinding
 import com.phucanh.gchat.models.User
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.regex.Pattern
+import javax.inject.Inject
+
+@AndroidEntryPoint
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var storage: FirebaseStorage
-    private lateinit var storageReference: StorageReference
+    @Inject
+    lateinit var storageReference: StorageReference
     private val CAMERA_PERMISSION_REQUEST_CODE = 1000
     private val CAMERA_REQUEST_CODE = 999
     private val STORAGE_PERMISSION_REQUEST_CODE = 1001
