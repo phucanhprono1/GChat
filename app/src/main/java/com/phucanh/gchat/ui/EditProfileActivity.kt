@@ -106,13 +106,23 @@ class EditProfileActivity : AppCompatActivity() {
                     val bio = binding.selfDescriptionEditInfo.text.toString()
                     val phone = binding.etPhoneEditInfo.text.toString()
                     val avatar = avtPath
-                    currentUserDB.child("avata").setValue(avatar)
-                    currentUserDB.child("name").setValue(name)
-                    currentUserDB.child("email").setValue(email)
-                    currentUserDB.child("phonenumber").setValue(phone)
-                    currentUserDB.child("dob").setValue(birthday)
-                    currentUserDB.child("address").setValue(address)
-                    currentUserDB.child("bio").setValue(bio)
+                    if (filePath != Uri.EMPTY) {
+                        currentUserDB.child("avata").setValue(avatar)
+                        currentUserDB.child("name").setValue(name)
+                        currentUserDB.child("email").setValue(email)
+                        currentUserDB.child("phonenumber").setValue(phone)
+                        currentUserDB.child("dob").setValue(birthday)
+                        currentUserDB.child("address").setValue(address)
+                        currentUserDB.child("bio").setValue(bio)
+                    }
+                    else{
+                        currentUserDB.child("name").setValue(name)
+                        currentUserDB.child("email").setValue(email)
+                        currentUserDB.child("phonenumber").setValue(phone)
+                        currentUserDB.child("dob").setValue(birthday)
+                        currentUserDB.child("address").setValue(address)
+                        currentUserDB.child("bio").setValue(bio)
+                    }
                     finish()
                 }
                 override fun onCancelled(error: DatabaseError) {

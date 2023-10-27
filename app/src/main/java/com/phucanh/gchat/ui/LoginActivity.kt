@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -25,6 +26,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.phucanh.gchat.databinding.ActivityLoginBinding
 import com.phucanh.gchat.models.User
 import com.phucanh.gchat.utils.StaticConfig
+import com.phucanh.gchat.viewModels.LoginViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -37,6 +39,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var mCallbackManager: CallbackManager
     private lateinit var firebaseAuthListener: FirebaseAuth.AuthStateListener
     private lateinit var loginManager: LoginManager
+    private lateinit var viewModel: LoginViewModel
     private lateinit var us: User
     private val VALID_EMAIL_ADDRESS_REGEX =
         Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE)
@@ -44,6 +47,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
         mAuth = Firebase.auth
         FacebookSdk.sdkInitialize(applicationContext)
 

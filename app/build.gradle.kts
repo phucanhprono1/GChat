@@ -53,6 +53,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
+    implementation("com.android.car.ui:car-ui-lib:2.5.1")
     val lifecycle_version = "2.6.2"
     val arch_version = "2.1.0"
     implementation("androidx.core:core-ktx:1.9.0")

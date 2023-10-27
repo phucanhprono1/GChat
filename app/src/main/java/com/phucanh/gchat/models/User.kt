@@ -2,28 +2,39 @@ package com.phucanh.gchat.models
 
 import android.os.Parcel
 import android.os.Parcelable
-
-open class User:Parcelable {
-    var name: String? = null
-    var email: String? = null
+import androidx.room.Entity
+import androidx.room.Ignore
+@Entity
+open class User{
+    open var name: String? = null
+    open var email: String? = null
     var avata: String? = null
-    var id: String? = null
+    open var id: String = ""
     var joinedDate:String? = null
-    var fcmToken: String? = null
+    open var fcmToken: String? = null
+    @Ignore
     var message: Message? = null
+    @Ignore
     var status: Status? = null
     var dob: String? = null
     var address: String? = null
     var phonenumber: String? = null
     var bio: String? = null
-    constructor(id: String?, name: String?, email: String?, avt: String?) {
+    constructor(id: String, name: String?, email: String?, avt: String?) {
         this.id = id
         this.name = name
         this.email = email
         this.avata = avt
     }
+    constructor(id: String, name: String?, email: String?, avt: String?,fcmToken: String?) {
+        this.id = id
+        this.name = name
+        this.email = email
+        this.avata = avt
+        this.fcmToken = fcmToken
+    }
 
-    constructor(id: String?, name: String?, email: String?) {
+    constructor(id: String, name: String?, email: String?) {
         this.id = id
         this.name = name
         this.email = email
@@ -40,11 +51,4 @@ open class User:Parcelable {
         message?.timestamp = 0
     }
 
-    override fun describeContents(): Int {
-        TODO("Not yet implemented")
-    }
-
-    override fun writeToParcel(p0: Parcel, p1: Int) {
-        TODO("Not yet implemented")
-    }
 }

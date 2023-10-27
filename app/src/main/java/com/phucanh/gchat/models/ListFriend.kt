@@ -3,9 +3,6 @@ package com.phucanh.gchat.models
 class ListFriend {
     var listFriend: ArrayList<Friend>? = null
 
-    fun getListFriend(): ArrayList<Friend>? {
-        return listFriend
-    }
 
     fun ListFriend() {
         listFriend = ArrayList()
@@ -20,7 +17,5 @@ class ListFriend {
         return ""
     }
 
-    fun setListFriend(listFriend: ArrayList<Friend>?) {
-        this.listFriend = listFriend
-    }
+
 }
