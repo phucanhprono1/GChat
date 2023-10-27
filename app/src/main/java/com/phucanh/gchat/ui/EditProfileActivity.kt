@@ -106,7 +106,7 @@ class EditProfileActivity : AppCompatActivity() {
                     val bio = binding.selfDescriptionEditInfo.text.toString()
                     val phone = binding.etPhoneEditInfo.text.toString()
                     val avatar = avtPath
-                    if (filePath != Uri.EMPTY) {
+                    if (avatar != "") {
                         currentUserDB.child("avata").setValue(avatar)
                         currentUserDB.child("name").setValue(name)
                         currentUserDB.child("email").setValue(email)

@@ -43,15 +43,17 @@ class AddInfoActivity : AppCompatActivity() {
         val currentUserDB = FirebaseDatabase.getInstance(getString(R.string.firebase_database_url)).getReference("/users/$uid")
         currentUserDB.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val name = snapshot.child("name").value.toString()
-                val email = snapshot.child("email").value.toString()
-                val avt = snapshot.child("avata").value.toString()
-                binding.tvUsernameAddInfo.text = name
-                binding.etEmailAddInfo.setText(email)
-                Glide.with(this@AddInfoActivity)
-                    .load(avt)
-                    .apply (RequestOptions().transform(CircleCrop()))
-                    .into(binding.imgAvatarAddInfo)
+                if (!isDestroyed) { // Kiểm tra xem Activity có bị hủy không
+                    val name = snapshot.child("name").value.toString()
+                    val email = snapshot.child("email").value.toString()
+                    val avt = snapshot.child("avata").value.toString()
+                    binding.tvUsernameAddInfo.text = name
+                    binding.etEmailAddInfo.setText(email)
+                    Glide.with(this@AddInfoActivity)
+                        .load(avt)
+                        .apply (RequestOptions().transform(CircleCrop()))
+                        .into(binding.imgAvatarAddInfo)
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
