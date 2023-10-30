@@ -1,14 +1,17 @@
 # GChat
 ```
+```
 📦 GChat
 ├─ manifest
 java.com.phucanh.gchat
 │  ├─ di
+service
+utils
 │  ├─ room
 │  ├─ ui
 │  │  └─ fragment
 │  ├─ viewModels
-│  └─ model
+│  └─ models
 └─ res
    ├─ layout
    ├─ drawable
