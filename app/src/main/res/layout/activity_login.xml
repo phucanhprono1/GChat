@@ -166,7 +166,10 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:text="@string/login"
-            style="@style/MyButtonStyle"
+            android:textColor="@color/white"
+
+            style="?attr/materialButtonOutlinedStyle"
+            app:strokeColor="@color/white"
             android:layout_marginRight="@dimen/_30sdp"
             android:layout_marginBottom="@dimen/_60sdp"/>
 

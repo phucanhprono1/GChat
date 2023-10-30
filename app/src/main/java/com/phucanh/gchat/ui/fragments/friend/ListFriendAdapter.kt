@@ -48,10 +48,10 @@ class ListFriendsAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val name = listFriend.listFriend!![position].name
+        val name = listFriend.listFriend!![position].user.name
         val id:String? = listFriend.listFriend!![position].id
         val idRoom = listFriend.listFriend!![position].idRoom
-        val avata = listFriend.listFriend!![position].avata
+        val avata = listFriend.listFriend!![position].user.avata
 
         (holder as ItemFriendViewHolder).txtName.text = name
         val connected = ServiceUtils.isNetworkConnected(holder.context)
@@ -85,25 +85,25 @@ class ListFriendsAdapter(
 ////            true
 //        }
 
-        if (listFriend.listFriend!![position].message!!.text !=null && connected) {
+        if (listFriend.listFriend!![position].user.message!!.text !=null && connected) {
             holder.txtMessage.visibility = View.VISIBLE
             holder.txtTime.visibility = View.VISIBLE
-            if ( listFriend.listFriend!![position].message!!.text!!.startsWith(id!!)) {
-                holder.txtMessage.text = listFriend.listFriend!![position].message!!.text
+            if ( listFriend.listFriend!![position].user.message!!.text!!.startsWith(id!!)) {
+                holder.txtMessage.text = listFriend.listFriend!![position].user.message!!.text
                 holder.txtMessage.setTypeface(Typeface.DEFAULT)
                 holder.txtName.setTypeface(Typeface.DEFAULT)
             } else {
-                holder.txtMessage.text = listFriend.listFriend!![position].message!!.text!!.substring((id + "").length)
+                holder.txtMessage.text = listFriend.listFriend!![position].user.message!!.text!!.substring((id + "").length)
                 holder.txtMessage.setTypeface(Typeface.DEFAULT_BOLD)
                 holder.txtName.setTypeface(Typeface.DEFAULT_BOLD)
             }
 
-            val time = SimpleDateFormat("EEE, d MMM yyyy").format(Date(listFriend.listFriend!![position].message!!.timestamp))
+            val time = SimpleDateFormat("EEE, d MMM yyyy").format(Date(listFriend.listFriend!![position].user.message!!.timestamp))
             val today = SimpleDateFormat("EEE, d MMM yyyy").format(Date(System.currentTimeMillis()))
             if (today == time) {
-                holder.txtTime.text = SimpleDateFormat("HH:mm").format(Date(listFriend.listFriend!![position].message!!.timestamp))
+                holder.txtTime.text = SimpleDateFormat("HH:mm").format(Date(listFriend.listFriend!![position].user.message!!.timestamp))
             } else {
-                holder.txtTime.text = SimpleDateFormat("MMM d").format(Date(listFriend.listFriend!![position].message!!.timestamp))
+                holder.txtTime.text = SimpleDateFormat("MMM d").format(Date(listFriend.listFriend!![position].user.message!!.timestamp))
             }
         } else {
             holder.txtMessage.visibility = View.GONE
@@ -119,17 +119,17 @@ class ListFriendsAdapter(
                         val mapMessage = dataSnapshot.value as HashMap<*, *>
                         if (mapMark[id] != null) {
                             if (!mapMark[id]!!) {
-                                listFriend.listFriend!![position].message!!.text = "$id${mapMessage["text"]}"
+                                listFriend.listFriend!![position].user.message!!.text = "$id${mapMessage["text"]}"
                             } else {
-                                listFriend.listFriend!![position].message!!.text = mapMessage["text"] as String
+                                listFriend.listFriend!![position].user.message!!.text = mapMessage["text"] as String
                             }
                             notifyDataSetChanged()
                             mapMark[id] = false
                         } else {
-                            listFriend.listFriend!![position].message!!.text = mapMessage["text"] as String
+                            listFriend.listFriend!![position].user.message!!.text = mapMessage["text"] as String
                             notifyDataSetChanged()
                         }
-                        listFriend.listFriend!![position].message!!.timestamp = mapMessage["timestamp"] as Long
+                        listFriend.listFriend!![position].user.message!!.timestamp = mapMessage["timestamp"] as Long
                     }
 
                     override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
@@ -147,10 +147,10 @@ class ListFriendsAdapter(
             }
         }
 
-        if (listFriend.listFriend!![position].avata == StaticConfig.AVATA) {
+        if (listFriend.listFriend!![position].user.avata == StaticConfig.AVATA) {
             Glide.with(holder.itemView).load(StaticConfig.AVATA).into(holder.avata)
         } else {
-            Glide.with(holder.itemView).load(Uri.parse(listFriend.listFriend!![position].avata)).into(holder.avata)
+            Glide.with(holder.itemView).load(Uri.parse(listFriend.listFriend!![position].user.avata)).into(holder.avata)
         }
 
         if (mapQueryOnline[id] == null && mapChildListenerOnline[id] == null && connected) {
@@ -163,7 +163,7 @@ class ListFriendsAdapter(
                 override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                     if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
                         Log.d("FriendsFragment add $id", dataSnapshot.value.toString())
-                        listFriend.listFriend!![position].status!!.isOnline = dataSnapshot.value as Boolean
+                        listFriend.listFriend!![position].user.status!!.isOnline = dataSnapshot.value as Boolean
                         notifyDataSetChanged()
                     }
                 }
@@ -171,7 +171,7 @@ class ListFriendsAdapter(
                 override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
                     if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
                         Log.d("FriendsFragment change $id", dataSnapshot.value.toString())
-                        listFriend.listFriend!![position].status!!.isOnline = dataSnapshot.value as Boolean
+                        listFriend.listFriend!![position].user.status!!.isOnline = dataSnapshot.value as Boolean
                         notifyDataSetChanged()
                     }
                 }
@@ -184,7 +184,7 @@ class ListFriendsAdapter(
             mapQueryOnline[id]?.addChildEventListener(mapChildListenerOnline[id]!!)
         }
 
-        if (listFriend.listFriend!![position].status!!.isOnline) {
+        if (listFriend.listFriend!![position].user.status!!.isOnline) {
             holder.avata.setBorderWidth(10)
         } else {
             holder.avata.setBorderWidth(0)

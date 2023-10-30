@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
@@ -38,8 +39,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         checkNotificationPermission()
-        navController = findNavController(R.id.nav_host_fragment)
-        binding.bottomNav.setupWithNavController(navController)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+        val navController = navHostFragment?.findNavController()
+        binding.bottomNav.setupWithNavController(navController!!)
 
         mAuth = FirebaseAuth.getInstance()
         uid = mAuth.currentUser?.uid!!

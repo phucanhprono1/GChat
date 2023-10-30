@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.phucanh.gchat.R
+import com.phucanh.gchat.databinding.FragmentFriendBinding
 import com.phucanh.gchat.viewModels.FriendViewModel
 
 class FriendFragment : Fragment() {
@@ -16,18 +18,24 @@ class FriendFragment : Fragment() {
     }
 
     private lateinit var viewModel: FriendViewModel
+    private lateinit var binding: FragmentFriendBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_friend, container, false)
+        binding = FragmentFriendBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FriendViewModel::class.java)
         // TODO: Use the ViewModel
+        binding.btnSearch.setOnClickListener {
+            findNavController().navigate(R.id.action_friendFragment_to_searchFragment)
+        }
+
     }
 
 }

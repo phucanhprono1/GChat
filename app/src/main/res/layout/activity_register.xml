@@ -248,7 +248,8 @@
             android:layout_below="@+id/linearLayoutLogin"
             android:text="@string/register"
             android:textColor="@color/white"
-            android:background="@drawable/transparent_button"
+            style="?attr/materialButtonOutlinedStyle"
+            app:strokeColor="@color/white"
             android:layout_marginRight="@dimen/_30sdp"
             android:layout_marginTop="@dimen/_30sdp" />
     </RelativeLayout>

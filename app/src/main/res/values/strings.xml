@@ -31,4 +31,8 @@
     <string name="self_introduction">Bio</string>
     <string name="save">Save</string>
     <string name="join_date">Joined Date</string>
+    <string name="search_people">Search People</string>
+    <string name="friend">Friends</string>
+    <string name="message">Message</string>
+    <string name="add_friend">Add Friend</string>
 </resources>

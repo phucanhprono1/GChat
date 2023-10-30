@@ -11,7 +11,7 @@ class ListFriend {
     fun getAvataById(id: String): String? {
         for (friend in listFriend!!) {
             if (id == friend.id) {
-                return friend.avata
+                return friend.user.avata
             }
         }
         return ""

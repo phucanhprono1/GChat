@@ -1,37 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragments.friend.FriendFragment">
-
-    <SearchView
-        android:id="@+id/searchView"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
+        android:background="@color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        >
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/friend"
+            app:titleTextAppearance="@style/TextAppearance.Material3.TitleMedium"
 
-        android:iconifiedByDefault="false"
-        android:queryHint="Search People"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            />
+    </com.google.android.material.appbar.AppBarLayout>
+    <Button
+        app:marginTopSystemWindowInsets="true"
+        style="?attr/materialButtonOutlinedStyle"
+        android:id="@+id/btnSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/baseline_search_24"
+        android:background="@drawable/shapebgsearch"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/search_people"
+        android:textColor="@color/black"
+        android:textAlignment="textStart"
+        android:textSize="@dimen/_12ssp"
+        android:fontFamily="@font/nunito_bold"
+
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleListFriend"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="@dimen/_10sdp"
 
-        app:layout_constraintEnd_toEndOf="@+id/searchView"
-        app:layout_constraintHorizontal_bias="0.526"
-        app:layout_constraintStart_toStartOf="@+id/searchView"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+       />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/_10sdp"
+    android:paddingHorizontal="@dimen/_10sdp"
+    tools:context=".ui.fragments.search.SearchFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back"
+            android:background="@null"
+            android:id="@+id/btnBackSearch"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:marginTopSystemWindowInsets="true"/>
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/svSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shapebgsearch"
+            app:defaultQueryHint="@string/search_people"
+            app:iconifiedByDefault="false"
+            app:marginTopSystemWindowInsets="true"
+            app:queryBackground="@null"
+            android:layoutDirection="rtl"
+            android:textAlignment="viewEnd">
+
+
+        </androidx.appcompat.widget.SearchView>
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleListSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        tools:itemCount="12"
+        />
+
+
+</LinearLayout>

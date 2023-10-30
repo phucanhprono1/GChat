@@ -9,7 +9,11 @@
         android:id="@+id/friendFragment"
         android:name="com.phucanh.gchat.ui.fragments.friend.FriendFragment"
         android:label="fragment_friend"
-        tools:layout="@layout/fragment_friend" />
+        tools:layout="@layout/fragment_friend" >
+        <action
+            android:id="@+id/action_friendFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+    </fragment>
     <fragment
         android:id="@+id/groupFragment"
         android:name="com.phucanh.gchat.ui.fragments.GroupFragment"
@@ -20,4 +24,18 @@
         android:name="com.phucanh.gchat.ui.fragments.UserProfileFragment"
         android:label="UserProfileFragment"
         tools:layout="@layout/fragment_user_profile"/>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.phucanh.gchat.ui.fragments.search.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_viewProfileFragment"
+            app:destination="@id/viewProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewProfileFragment"
+        android:name="com.phucanh.gchat.ui.fragments.ViewProfileFragment"
+        android:label="fragment_view_profile"
+        tools:layout="@layout/fragment_view_profile" />
 </navigation>

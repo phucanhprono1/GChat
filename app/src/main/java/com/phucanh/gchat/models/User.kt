@@ -8,7 +8,7 @@ import androidx.room.Ignore
 open class User{
     open var name: String? = null
     open var email: String? = null
-    var avata: String? = null
+    open var avata: String? = null
     open var id: String = ""
     var joinedDate:String? = null
     open var fcmToken: String? = null
