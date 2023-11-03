@@ -9,42 +9,45 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.phucanh.gchat.models.User
+import com.phucanh.gchat.utils.StaticConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(val userReference: DatabaseReference,application: Application) : AndroidViewModel(application) {
+class SearchViewModel @Inject constructor(private val userReference: DatabaseReference, application: Application) : AndroidViewModel(application) {
 
 
 
     val userList: MutableLiveData<List<User>> = MutableLiveData()
 
     fun search(name: String) {
-        if(name.isEmpty()){
+        if (name.isEmpty()) {
             userList.value = ArrayList()
             return
-        }
-        else{
-            userReference.orderByChild("name")
-                .startAt(name.lowercase(Locale.getDefault()))
-                .endAt(name.lowercase() + "\uf8ff")
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val users = ArrayList<User>()
+        } else {
+            val searchKeywords = name.trim().split("\\s+".toRegex())
+            val searchResults = mutableListOf<User>()
 
-                        for (data in snapshot.children) {
-                            val user = data.getValue(User::class.java)
-                            user?.let { users.add(it) }
+            userReference.orderByChild("name").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (data in snapshot.children) {
+                        val user = data.getValue(User::class.java)
+                        if (user != null && user.id != StaticConfig.UID) {
+                            val userName = user.name!!.lowercase(Locale.getDefault())
+
+                            if (searchKeywords.any { keyword -> userName.contains(keyword) }) {
+                                searchResults.add(user)
+                            }
                         }
-                        userList.value = users
                     }
+                    userList.value = searchResults
+                }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        // Handle the error
-                    }
-                })
+                override fun onCancelled(error: DatabaseError) {
+                    // Xử lý lỗi
+                }
+            })
         }
-
     }
 }

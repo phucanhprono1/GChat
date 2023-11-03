@@ -6,9 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.phucanh.gchat.R
 import com.phucanh.gchat.databinding.FragmentFriendBinding
+import com.phucanh.gchat.models.Friend
+import com.phucanh.gchat.models.ListFriend
 import com.phucanh.gchat.viewModels.FriendViewModel
 
 class FriendFragment : Fragment() {
@@ -17,7 +21,7 @@ class FriendFragment : Fragment() {
         fun newInstance() = FriendFragment()
     }
 
-    private lateinit var viewModel: FriendViewModel
+    private val viewModel by activityViewModels<FriendViewModel>()
     private lateinit var binding: FragmentFriendBinding
 
     override fun onCreateView(
@@ -30,12 +34,20 @@ class FriendFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(FriendViewModel::class.java)
+
         // TODO: Use the ViewModel
         binding.btnSearch.setOnClickListener {
             findNavController().navigate(R.id.action_friendFragment_to_searchFragment)
         }
+        viewModel._listFriend.observe(viewLifecycleOwner) {
+            if (it != null) {
+                var listFriendsAdapter = ListFriendsAdapter(requireContext(), it, newInstance())
+                listFriendsAdapter.notifyDataSetChanged()
+                binding.recycleListFriend.adapter = listFriendsAdapter
+                binding.recycleListFriend.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
+            }
+        }
     }
 
 }

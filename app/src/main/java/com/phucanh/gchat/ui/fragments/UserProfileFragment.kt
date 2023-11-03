@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -26,10 +28,11 @@ import com.phucanh.gchat.R
 import com.phucanh.gchat.databinding.FragmentUserProfileBinding
 import com.phucanh.gchat.models.Configuration
 import com.phucanh.gchat.models.User
+import com.phucanh.gchat.room.FriendDao
 import com.phucanh.gchat.ui.EditProfileActivity
 import com.phucanh.gchat.ui.LoginActivity
 import com.phucanh.gchat.ui.MainActivity
-import com.phucanh.gchat.viewModels.UserProfileViewModelFactory
+
 import com.phucanh.gchat.viewModels.UserProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -38,13 +41,12 @@ class UserProfileFragment : Fragment() {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var myAccount: User
     private lateinit var context: Context
-    @Inject
-    lateinit var viewModelFactory: UserProfileViewModelFactory
+
     companion object {
         fun newInstance() = UserProfileFragment()
     }
 
-    private lateinit var viewModel: UserProfileViewModel
+    private val viewModel by activityViewModels<UserProfileViewModel>()
     val activity: MainActivity? = getActivity() as MainActivity?
     private lateinit var binding: FragmentUserProfileBinding
     private lateinit var userInfoAdapter: UserInfoAdapter
@@ -58,9 +60,9 @@ class UserProfileFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this,viewModelFactory).get(UserProfileViewModel::class.java)
+
         // TODO: Use the ViewModel
-        userInfoAdapter = UserInfoAdapter(emptyList())
+        userInfoAdapter = UserInfoAdapter(emptyList(),viewModel.friendDao)
         binding.infoRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.infoRecyclerView.adapter = userInfoAdapter
         mAuth = FirebaseAuth.getInstance()
@@ -84,7 +86,7 @@ class UserProfileFragment : Fragment() {
 
 
     }
-    inner class UserInfoAdapter(private var profileConfig: List<Configuration>) : RecyclerView.Adapter<UserInfoAdapter.ViewHolder>() {
+    inner class UserInfoAdapter(private var profileConfig: List<Configuration>,val friendDao: FriendDao) : RecyclerView.Adapter<UserInfoAdapter.ViewHolder>() {
         fun updateData(newData: List<Configuration>) {
             profileConfig = newData
             notifyDataSetChanged()
@@ -104,11 +106,14 @@ class UserProfileFragment : Fragment() {
                 if (config.label == getString(R.string.logout)) {
                     FirebaseAuth.getInstance().signOut()
                     LoginManager.getInstance().logOut()
-//                FriendDB.getInstance(context).dropDB()
-//                GroupDB.getInstance(context).dropDB()
+                    friendDao.deleteAll()
+
 //                ServiceUtils.stopServiceFriendChat(context.applicationContext, true)
                     activity?.finish()
                     startActivity(Intent(requireContext(), LoginActivity::class.java))
+                }
+                if (config.label == getString(R.string.friend_request)){
+                    findNavController().navigate(R.id.action_global_friendRequestFragment)
                 }
 
 

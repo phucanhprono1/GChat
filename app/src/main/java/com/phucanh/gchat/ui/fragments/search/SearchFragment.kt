@@ -42,6 +42,7 @@ class SearchFragment : Fragment() {
         binding.svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 viewModel.search(query!!)
+
                 return false
             }
 
@@ -57,7 +58,7 @@ class SearchFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
         viewModel.userList.observe(viewLifecycleOwner) {
             searchAdapter = SearchAdapter(it!!, requireContext(),findNavController())
-            searchAdapter!!.notifyDataSetChanged()
+            searchAdapter!!.updateList(it)
             searchAdapter!!.setOnClickListener(object : SearchAdapter.OnClickListener {
                 override fun onClick(position: Int) {
                     val args = Bundle()

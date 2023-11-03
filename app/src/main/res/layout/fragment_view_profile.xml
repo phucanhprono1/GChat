@@ -1,10 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragments.ViewProfileFragment">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <!-- Back button -->
+            <ImageButton
+                android:id="@+id/backButtonViewProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:src="@drawable/ic_back_24"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back" />
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textSize="18sp"
+                android:textColor="@color/blue"
+                android:fontFamily="@font/nunito_bold"
+                android:layout_gravity="center" />
+
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +63,7 @@
                     android:layout_gravity="center">
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/profile_image_edit_profile"
+                        android:id="@+id/profile_image_view_profile"
                         android:layout_width="@dimen/_100sdp"
                         android:layout_height="@dimen/_100sdp"
                         android:layout_below="@id/registertv1"
@@ -67,21 +101,52 @@
                     android:orientation="horizontal">
 
                     <Button
-                        style="?attr/materialButtonOutlinedStyle"
+                        android:id="@+id/btn_message_view_profile"
+                        style="?attr/buttonBarNeutralButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/nunito_bold"
                         android:text="@string/message"
+                        android:drawableLeft="@drawable/ic_message"
+                        android:textAllCaps="false"
                         android:visibility="gone"
                         android:textColor="@color/blue" />
                     <Button
+                        android:id="@+id/btn_add_friend_view_profile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_10sdp"
                         style="?attr/materialButtonOutlinedStyle"
                         android:fontFamily="@font/nunito_bold"
                         android:text="@string/add_friend"
+                        android:textAllCaps="false"
+                        android:drawableLeft="@drawable/ic_add_friend"
                         android:textColor="@color/blue" />
+                    <Button
+                        android:id="@+id/btn_unfriend_view_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        style="?attr/buttonBarNegativeButtonStyle"
+                        android:fontFamily="@font/nunito_bold"
+                        android:text="@string/unfriend"
+                        android:textAllCaps="false"
+
+                        android:drawableLeft="@drawable/ic_remove_friend"
+                        android:textColor="@color/blue" />
+                    <Button
+                        android:id="@+id/btn_friend_request_sent_view_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        style="?attr/buttonBarNegativeButtonStyle"
+                        android:fontFamily="@font/nunito_bold"
+                        android:text="@string/friend_request_sent"
+                        android:textAllCaps="false"
+                        android:drawableLeft="@drawable/baseline_add_task_24"
+                        android:textColor="@color/blue"
+                        android:singleLine="true"/>
+
                 </LinearLayout>
 
 
@@ -251,4 +316,4 @@
 
     </LinearLayout>
 
-</androidx.core.widget.NestedScrollView>
+</LinearLayout>

@@ -16,4 +16,5 @@ data class Friend(
 ){
     @PrimaryKey(autoGenerate = false)
     var id = user.id
+    constructor():this("",User())
 }

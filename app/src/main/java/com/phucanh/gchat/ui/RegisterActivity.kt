@@ -259,7 +259,7 @@ class RegisterActivity : AppCompatActivity() {
         val usersRef = FirebaseDatabase.getInstance(getString(R.string.firebase_database_url)).reference.child("users")
         val userId = mAuth.currentUser!!.uid
 
-        val user = User(userId, username, email, avtPath)
+        val user = User(id=userId, name=username, email=email, avata=avtPath)
         FirebaseMessaging.getInstance().token
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {

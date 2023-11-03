@@ -9,8 +9,11 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.phucanh.gchat.R
 import com.phucanh.gchat.databinding.FragmentViewProfileBinding
+import com.phucanh.gchat.utils.StaticConfig
 import com.phucanh.gchat.viewModels.ViewProfileViewModel
 
 class ViewProfileFragment : Fragment() {
@@ -49,8 +52,29 @@ class ViewProfileFragment : Fragment() {
             binding.tvPhoneViewProfile.text = it.phonenumber
             binding.tvAddressViewProfile.text = it.address
             binding.tvEmailViewProfile.text = it.email
-
+            Glide.with(requireContext()).load(it.avata).apply (RequestOptions.circleCropTransform()).into(binding.profileImageViewProfile)
         }
+        binding.backButtonViewProfile.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        if (StaticConfig.LIST_FRIEND_ID.contains(uid)) {
+            binding.btnAddFriendViewProfile.visibility = View.GONE
+            binding.btnFriendRequestSentViewProfile.visibility = View.GONE
+            binding.btnUnfriendViewProfile.visibility = View.VISIBLE
+            binding.btnMessageViewProfile.visibility = View.VISIBLE
+        }
+        else {
+            binding.btnAddFriendViewProfile.visibility = View.VISIBLE
+            binding.btnFriendRequestSentViewProfile.visibility = View.GONE
+            binding.btnUnfriendViewProfile.visibility = View.GONE
+            binding.btnMessageViewProfile.visibility = View.GONE
+        }
+        binding.btnAddFriendViewProfile.setOnClickListener {
+            viewModel.addFriendRequest(uid)
+            binding.btnAddFriendViewProfile.visibility = View.GONE
+            binding.btnFriendRequestSentViewProfile.visibility = View.VISIBLE
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
     }
 
 }

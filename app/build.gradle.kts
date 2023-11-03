@@ -67,6 +67,7 @@ dependencies {
     implementation("com.intuit.ssp:ssp-android:1.1.0")
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.google.firebase:firebase-database-ktx")
+    implementation("com.firebaseui:firebase-ui-database:8.0.2")
     implementation ("com.facebook.android:facebook-login:16.2.0")
     implementation("com.google.firebase:firebase-auth-ktx")
 

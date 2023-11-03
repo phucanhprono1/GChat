@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragments.friend.FriendFragment">
     <com.google.android.material.appbar.AppBarLayout
@@ -28,13 +29,13 @@
         android:id="@+id/btnSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
         android:drawableLeft="@drawable/baseline_search_24"
-        android:background="@drawable/shapebgsearch"
-        android:theme="@style/ThemeOverlay.AppCompat.Light"
         android:text="@string/search_people"
         android:textColor="@color/black"
         android:textAlignment="textStart"
         android:textSize="@dimen/_12ssp"
+        app:cornerRadius="@dimen/_20sdp"
         android:fontFamily="@font/nunito_bold"
 
         />

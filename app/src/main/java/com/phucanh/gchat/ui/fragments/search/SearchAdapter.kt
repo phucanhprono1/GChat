@@ -18,6 +18,11 @@ class SearchAdapter(
     private val context: Context,
     val navController: NavController
 ):RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
+    fun updateList(list: List<User>){
+        this.list.toMutableList().clear()
+        this.list.toMutableList().addAll(list)
+        notifyDataSetChanged()
+    }
     inner class SearchViewHolder(
         val view: View,
         val context: Context,

@@ -1,15 +1,21 @@
 package com.phucanh.gchat.viewModels
 
 
+import android.app.Application
 import android.content.Context
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.phucanh.gchat.R
 import com.phucanh.gchat.models.Configuration
 import com.phucanh.gchat.models.User
+import com.phucanh.gchat.room.FriendDao
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class UserProfileViewModel(private val context: Context) : ViewModel() {
+@HiltViewModel
+class UserProfileViewModel @Inject constructor(private val context: Context,val friendDao: FriendDao, application: Application) : AndroidViewModel(application) {
     fun listConfig(myAccount: User): List<Configuration> {
         return listOf(
             Configuration(R.mipmap.ic_email, context.getString(R.string.email), myAccount.email!!),
@@ -20,6 +26,8 @@ class UserProfileViewModel(private val context: Context) : ViewModel() {
         )
     }
     val userDB: DatabaseReference = FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/").reference.child("users")
-
+    fun deleteAllFriend(){
+        friendDao.deleteAll()
+    }
 
 }

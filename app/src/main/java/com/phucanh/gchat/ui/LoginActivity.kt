@@ -56,7 +56,7 @@ class LoginActivity : AppCompatActivity() {
             val email = binding.editTextEmail.text.toString()
             val password = binding.editTextPassword.text.toString()
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please enter text in email/pw", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter content in email/pw", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if (!VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()) {
@@ -151,7 +151,7 @@ class LoginActivity : AppCompatActivity() {
         val intent = Intent(this@LoginActivity, MainActivity::class.java)
         val usersRef = FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("users")
         val userId = mAuth.currentUser!!.uid
-        us = User(userId, user?.displayName, user?.email, user?.photoUrl.toString())
+        us = User(id = userId, name = user.displayName, email = user.email, avata = user.photoUrl.toString())
 
         // Lấy FCM token
         FirebaseMessaging.getInstance().token

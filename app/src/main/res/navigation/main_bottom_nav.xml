@@ -38,4 +38,14 @@
         android:name="com.phucanh.gchat.ui.fragments.ViewProfileFragment"
         android:label="fragment_view_profile"
         tools:layout="@layout/fragment_view_profile" />
+    <fragment
+        android:id="@+id/friendRequestFragment"
+        android:name="com.phucanh.gchat.ui.fragments.friend_request.FriendRequestFragment"
+        android:label="fragment_friend_request"
+        tools:layout="@layout/fragment_friend_request" >
+
+    </fragment>
+    <action
+        android:id="@+id/action_global_friendRequestFragment"
+        app:destination="@+id/friendRequestFragment"/>
 </navigation>
