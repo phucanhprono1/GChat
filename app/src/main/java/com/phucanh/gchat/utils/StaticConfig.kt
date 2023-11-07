@@ -30,6 +30,7 @@ object StaticConfig {
     const val TIME_TO_OFFLINE = 2 * 1000.toLong()
     var ID_FRIEND_REQ: String? = null
     var FRIEND_REQUEST: Friend? = null
-    val LIST_FRIEND_ID = ArrayList<String>()
+    var LIST_FRIEND_ID = ArrayList<String>()
+    var LIST_FRIEND_REQUEST_ID = ArrayList<String>()
 
 }

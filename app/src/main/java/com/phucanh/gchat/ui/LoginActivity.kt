@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -53,13 +54,19 @@ class LoginActivity : AppCompatActivity() {
 
         //Login thuong
         binding.buttonSignIn.setOnClickListener {
+            binding.progressBar.visibility = View.VISIBLE
+            binding.buttonSignIn.visibility = View.GONE
             val email = binding.editTextEmail.text.toString()
             val password = binding.editTextPassword.text.toString()
             if (email.isEmpty() || password.isEmpty()) {
+                binding.progressBar.visibility = View.GONE
+                binding.buttonSignIn.visibility = View.VISIBLE
                 Toast.makeText(this, "Please enter content in email/pw", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if (!VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()) {
+                binding.progressBar.visibility = View.GONE
+                binding.buttonSignIn.visibility = View.VISIBLE
                 Toast.makeText(this, "Please enter valid email", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -67,6 +74,8 @@ class LoginActivity : AppCompatActivity() {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val user = mAuth.currentUser
+                        binding.progressBar.visibility = View.GONE
+                        binding.buttonSignIn.visibility = View.VISIBLE
                         updateUI(user)
                     } else {
                         Toast.makeText(this@LoginActivity, "Incorrect email or password.", Toast.LENGTH_SHORT).show()

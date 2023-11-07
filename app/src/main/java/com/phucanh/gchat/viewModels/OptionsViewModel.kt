@@ -4,7 +4,6 @@ package com.phucanh.gchat.viewModels
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.phucanh.gchat.R
@@ -15,7 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class UserProfileViewModel @Inject constructor(private val context: Context,val friendDao: FriendDao, application: Application) : AndroidViewModel(application) {
+class OptionsViewModel @Inject constructor(private val context: Context, val friendDao: FriendDao, application: Application) : AndroidViewModel(application) {
     fun listConfig(myAccount: User): List<Configuration> {
         return listOf(
             Configuration(R.mipmap.ic_email, context.getString(R.string.email), myAccount.email!!),

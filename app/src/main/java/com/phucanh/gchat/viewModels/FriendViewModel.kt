@@ -1,12 +1,12 @@
 package com.phucanh.gchat.viewModels
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -22,35 +22,50 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FriendViewModel @Inject constructor(
+    private val context: Context,
     private val firebaseDatabase: FirebaseDatabase,
     private val friendDao: FriendDao,
     application: Application
 ) : AndroidViewModel(application) {
-    val _listFriend: MutableLiveData<ListFriend> = MutableLiveData()
+    val _listFriend: MutableLiveData<ListFriend?> = MutableLiveData()
+    val listFriend: LiveData<ListFriend?>
+        get() = _listFriend
+    var index = 0
     private val friendRef = firebaseDatabase.getReference("friend")
     @Inject
     lateinit var userRef: DatabaseReference
+    private val friendRequestRef = firebaseDatabase.getReference("friend_requests")
     var listFriendID = ArrayList<String>()
 
-    init {
-        // Load friends from Room database on initialization
+//    init {
+//        // Load friends from Room database on initialization
+//        getListFriendUId()
+//
+////        StaticConfig.LIST_FRIEND_ID.addAll(listFriendID)
+//        for (id in StaticConfig.LIST_FRIEND_ID) {
+//            Log.d("FriendViewModel", "init: $id")
+//        }
+//    }
+
+    fun refreshListFriend() {
+        friendDao.deleteAll()
+        StaticConfig.LIST_FRIEND_ID.clear()
+        listFriendID.clear()
+        index = 0
         getListFriendUId()
-        for(i in listFriendID){
-            Log.d("FriendViewModel", "init: $i")
-        }
     }
 
 
-
-    private fun getListFriendUId() {
+    fun getListFriendUId() {
         friendRef.child(StaticConfig.UID).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
                 for (snapshot in dataSnapshot.children) {
-                    Log.d("FriendViewModel", "onDataChange: ${snapshot.value!!.toString()}")
+                  //  Log.d("FriendViewModel", "onDataChange: ${snapshot.value!!.toString()}")
                     listFriendID.add(snapshot.value!!.toString())
+                    StaticConfig.LIST_FRIEND_ID.add(snapshot.value!!.toString())
                 }
-                getAllFriendInfo(0)
+                getAllFriendInfo(index)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -59,13 +74,13 @@ class FriendViewModel @Inject constructor(
         })
     }
 
+
     fun getAllFriendInfo(index: Int) {
 
             if (index == listFriendID.size) {
-                var listFriend: ListFriend = ListFriend()
+                val listFriend: ListFriend = ListFriend()
                 listFriend.listFriend = friendDao.getAll() as ArrayList<Friend>
-                // Notify observers that the friend list has been updated
-                _listFriend.postValue(listFriend)
+                _listFriend.value = listFriend
             } else {
                 val id = listFriendID[index]
                 userRef.child(id).addListenerForSingleValueEvent(object : ValueEventListener {
@@ -92,5 +107,57 @@ class FriendViewModel @Inject constructor(
                 })
             }
 
+    }
+    fun deleteFriend(idFriend: String) {
+        Log.d("FriendViewModel", "deleteFriend: $idFriend")
+        friendRef.child(StaticConfig.UID)
+            .orderByValue().equalTo(idFriend)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.value == null) {
+                        // Friend not found
+                    } else {
+
+                        val idRemoval = (dataSnapshot.value as HashMap<*, *>).keys.iterator().next().toString()
+                        Log.d("FriendViewModel", "idRemoval: $idRemoval")
+                        friendRef.child(idFriend).orderByValue().equalTo(StaticConfig.UID).addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                if (dataSnapshot.value == null) {
+                                    // Friend not found
+                                } else {
+                                    val idRemoval2 = (dataSnapshot.value as HashMap<*, *>).keys.iterator().next().toString()
+                                    Log.d("FriendViewModel", "idRemoval2: $idRemoval2")
+                                    friendRef.child(StaticConfig.UID).child(idRemoval).removeValue()
+                                    friendRef.child(idFriend).child(idRemoval2).removeValue()
+
+                                }
+                            }
+
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                // Handle onCancelled event
+                            }
+                        })
+
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Handle onCancelled event
+                }
+            })
+        friendDao.deleteFriendById(idFriend)
+
+        // Xóa bạn từ LiveData
+        val currentListFriend = _listFriend.value?.listFriend?.toMutableList()
+        currentListFriend?.removeIf { it.id == idFriend }
+        val updatedListFriend = ListFriend()
+        updatedListFriend.listFriend = currentListFriend as ArrayList<Friend>
+        _listFriend.value = updatedListFriend
+
+        // Xóa bạn từ listFriendID
+        listFriendID.remove(idFriend)
+
+        // Xóa bạn từ StaticConfig.LIST_FRIEND_ID
+        StaticConfig.LIST_FRIEND_ID.remove(idFriend)
     }
 }

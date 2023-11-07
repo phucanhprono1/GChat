@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.phucanh.gchat.models.Friend
+import com.phucanh.gchat.models.ListFriend
 
 
 @Dao

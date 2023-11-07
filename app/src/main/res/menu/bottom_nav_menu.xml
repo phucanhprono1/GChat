@@ -9,7 +9,7 @@
         android:icon="@drawable/ic_tab_group"
         android:title="@string/groups" />
     <item
-        android:id="@+id/userProfileFragment"
+        android:id="@+id/optionsFragment"
         android:icon="@drawable/ic_tab_infor"
         android:title="@string/info" />
 </menu>

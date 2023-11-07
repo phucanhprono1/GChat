@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_friendFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_friendFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
     </fragment>
     <fragment
         android:id="@+id/groupFragment"
@@ -20,10 +23,10 @@
         android:label="fragment_group"
         tools:layout="@layout/fragment_group" />
     <fragment
-        android:id="@+id/userProfileFragment"
-        android:name="com.phucanh.gchat.ui.fragments.UserProfileFragment"
-        android:label="UserProfileFragment"
-        tools:layout="@layout/fragment_user_profile"/>
+        android:id="@+id/optionsFragment"
+        android:name="com.phucanh.gchat.ui.fragments.OptionsFragment"
+        android:label="OptionsFragment"
+        tools:layout="@layout/fragment_options"/>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.phucanh.gchat.ui.fragments.search.SearchFragment"
@@ -47,5 +50,15 @@
     </fragment>
     <action
         android:id="@+id/action_global_friendRequestFragment"
-        app:destination="@+id/friendRequestFragment"/>
+        app:destination="@+id/friendRequestFragment"
+        />
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.phucanh.gchat.ui.fragments.chat.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" />
+    <action
+        android:id="@+id/action_global_chatFragment"
+        app:destination="@+id/chatFragment"
+        />
 </navigation>

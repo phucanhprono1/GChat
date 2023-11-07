@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
@@ -22,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.phucanh.gchat.R
 import com.phucanh.gchat.databinding.ActivityMainBinding
+import com.phucanh.gchat.models.FriendRequest
 import com.phucanh.gchat.utils.StaticConfig
 import com.phucanh.gchat.viewModels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,22 +35,41 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
     private var uid: String = ""
     private lateinit var currentUserDB: DatabaseReference
+    private lateinit var friendRequestDB: DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        mAuth = FirebaseAuth.getInstance()
+        uid = mAuth.currentUser?.uid!!
+        StaticConfig.UID = uid
         checkNotificationPermission()
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
         val navController = navHostFragment?.findNavController()
         binding.bottomNav.setupWithNavController(navController!!)
+        navController?.addOnDestinationChangedListener { controller, destination, _ ->
+            if (destination.id == R.id.friendRequestFragment  || destination.id == R.id.searchFragment || destination.id == R.id.viewProfileFragment || destination.id==R.id.chatFragment) {
+                hideBottomNav()
+            } else {
+                showBottomNav()
+            }
+        }
+        if(StaticConfig.UID == null || StaticConfig.UID !=mAuth.currentUser?.uid){
+            binding.loadingLayout.visibility = View.VISIBLE
+            binding.bottomNav.visibility = View.GONE
+            binding.navHostFragment.visibility = View.GONE
+        }
+        else{
+            binding.loadingLayout.visibility = View.GONE
+            binding.bottomNav.visibility = View.VISIBLE
+            binding.navHostFragment.visibility = View.VISIBLE
+        }
 
-        mAuth = FirebaseAuth.getInstance()
-        uid = mAuth.currentUser?.uid!!
+        StaticConfig.UID = uid
         currentUserDB = FirebaseDatabase.getInstance(getString(R.string.firebase_database_url)).getReference("/users/$uid")
         currentUserDB.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                StaticConfig.UID = uid
+
                 StaticConfig.NAME = snapshot.child("name").value.toString()
                 StaticConfig.AVATA = snapshot.child("avata").value.toString()
                 StaticConfig.ADDRESS = snapshot.child("address").value.toString()
@@ -65,9 +86,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRestart() {
         super.onRestart()
+
         currentUserDB.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                StaticConfig.UID = uid
+
                 StaticConfig.NAME = snapshot.child("name").value.toString()
                 StaticConfig.AVATA = snapshot.child("avata").value.toString()
                 StaticConfig.ADDRESS = snapshot.child("address").value.toString()
@@ -84,9 +106,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
         currentUserDB.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                StaticConfig.UID = uid
+
                 StaticConfig.NAME = snapshot.child("name").value.toString()
                 StaticConfig.AVATA = snapshot.child("avata").value.toString()
                 StaticConfig.ADDRESS = snapshot.child("address").value.toString()
@@ -123,9 +146,20 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
+    fun hideBottomNav(){
+        binding.bottomNav.visibility = View.GONE
+    }
+    fun showBottomNav(){
+        binding.bottomNav.visibility = View.VISIBLE
+    }
     override fun onDestroy() {
         super.onDestroy()
+        StaticConfig.UID = ""
+        StaticConfig.LIST_FRIEND_ID.clear()
+        StaticConfig.LIST_FRIEND_REQUEST_ID.clear()
 
+    }
+    fun finishMain(){
+        finish()
     }
 }

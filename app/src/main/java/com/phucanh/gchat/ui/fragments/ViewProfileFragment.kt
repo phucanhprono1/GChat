@@ -69,6 +69,12 @@ class ViewProfileFragment : Fragment() {
             binding.btnUnfriendViewProfile.visibility = View.GONE
             binding.btnMessageViewProfile.visibility = View.GONE
         }
+        if(viewModel.checkFriendRequest(uid)){
+            binding.btnAddFriendViewProfile.visibility = View.GONE
+            binding.btnFriendRequestSentViewProfile.visibility = View.VISIBLE
+            binding.btnUnfriendViewProfile.visibility = View.GONE
+            binding.btnMessageViewProfile.visibility = View.GONE
+        }
         binding.btnAddFriendViewProfile.setOnClickListener {
             viewModel.addFriendRequest(uid)
             binding.btnAddFriendViewProfile.visibility = View.GONE

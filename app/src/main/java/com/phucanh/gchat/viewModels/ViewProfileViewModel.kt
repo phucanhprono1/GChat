@@ -38,23 +38,19 @@ class ViewProfileViewModel @Inject constructor(val userReference: DatabaseRefere
             }
         })
     }
-    fun checkFriendRequest(idFriend: String?){
+
+    fun checkFriendRequest(idFriend: String?):Boolean{
+        var isFriend = false
         if (idFriend != null) {
             val currentUserID = FirebaseAuth.getInstance().currentUser!!.uid
             val friendRequestRef = firebaseDatabase.getReference("friend_requests")
-            friendRequestRef.child(currentUserID).child(idFriend).addListenerForSingleValueEvent(object : ValueEventListener {
+            friendRequestRef.child(currentUserID).child(idFriend).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val friendRequest = snapshot.getValue(FriendRequest::class.java)
-                        if (friendRequest != null) {
-                            if (friendRequest.status == "pending") {
-                                Toast.makeText(getApplication(), "Friend request sent", Toast.LENGTH_SHORT).show()
-                            } else if (friendRequest.status == "accepted") {
-                                Toast.makeText(getApplication(), "You are friends", Toast.LENGTH_SHORT).show()
-                            }
+                        if (friendRequest?.status.equals("pending")) {
+                            isFriend = true
                         }
-                    } else {
-                        addFriendRequest(idFriend)
                     }
                 }
 
@@ -63,6 +59,7 @@ class ViewProfileViewModel @Inject constructor(val userReference: DatabaseRefere
                 }
             })
         }
+        return isFriend
     }
     fun addFriendRequest(idFriend: String?) {
         if (idFriend != null ) {
