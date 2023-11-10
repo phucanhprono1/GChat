@@ -5,5 +5,6 @@ class Message {
     var nameSender: String? = null
     var idReceiver: String? = null
     var content: String? = null
+    var type: Int? = 0
     var timestamp: Long = 0
 }

@@ -2,11 +2,10 @@ package com.phucanh.gchat.viewModels
 
 import android.app.Application
 import android.content.Context
+import android.os.CountDownTimer
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -15,9 +14,9 @@ import com.google.firebase.database.ValueEventListener
 import com.phucanh.gchat.models.Friend
 import com.phucanh.gchat.models.ListFriend
 import com.phucanh.gchat.room.FriendDao
+import com.phucanh.gchat.utils.ServiceUtils
 import com.phucanh.gchat.utils.StaticConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,8 +27,8 @@ class FriendViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
     val _listFriend: MutableLiveData<ListFriend?> = MutableLiveData()
-    val listFriend: LiveData<ListFriend?>
-        get() = _listFriend
+    var listFriend: ListFriend= ListFriend()
+
     var index = 0
     private val friendRef = firebaseDatabase.getReference("friend")
     @Inject
@@ -37,19 +36,28 @@ class FriendViewModel @Inject constructor(
     private val friendRequestRef = firebaseDatabase.getReference("friend_requests")
     var listFriendID = ArrayList<String>()
 
-//    init {
-//        // Load friends from Room database on initialization
-//        getListFriendUId()
-//
-////        StaticConfig.LIST_FRIEND_ID.addAll(listFriendID)
-//        for (id in StaticConfig.LIST_FRIEND_ID) {
-//            Log.d("FriendViewModel", "init: $id")
-//        }
-//    }
+    var detectFriendOnline :CountDownTimer
+    init {
+        _listFriend.value = listFriend
+        getListFriendUId()
+        detectFriendOnline = object : CountDownTimer(StaticConfig.TIME_TO_REFRESH, StaticConfig.TIME_TO_REFRESH) {
+            override fun onTick(millisUntilFinished: Long) {
+                // TODO Auto-generated method stub
+                ServiceUtils.updateUserStatus(context)
+                ServiceUtils.updateFriendStatus(context, _listFriend.value)
+            }
+
+            override fun onFinish() {
+
+            }
+        }
+    }
+
 
     fun refreshListFriend() {
         friendDao.deleteAll()
         StaticConfig.LIST_FRIEND_ID.clear()
+        detectFriendOnline.cancel()
         listFriendID.clear()
         index = 0
         getListFriendUId()
@@ -78,9 +86,9 @@ class FriendViewModel @Inject constructor(
     fun getAllFriendInfo(index: Int) {
 
             if (index == listFriendID.size) {
-                val listFriend: ListFriend = ListFriend()
-                listFriend.listFriend = friendDao.getAll() as ArrayList<Friend>
+                listFriend!!.listFriend = friendDao.getAll() as ArrayList<Friend>
                 _listFriend.value = listFriend
+                detectFriendOnline.start()
             } else {
                 val id = listFriendID[index]
                 userRef.child(id).addListenerForSingleValueEvent(object : ValueEventListener {

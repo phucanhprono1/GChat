@@ -77,6 +77,7 @@ class ViewProfileFragment : Fragment() {
         }
         binding.btnAddFriendViewProfile.setOnClickListener {
             viewModel.addFriendRequest(uid)
+            viewModel.sendPushNotification(uid,StaticConfig.NAME + getString(R.string.sent_you_a_friend_request))
             binding.btnAddFriendViewProfile.visibility = View.GONE
             binding.btnFriendRequestSentViewProfile.visibility = View.VISIBLE
         }

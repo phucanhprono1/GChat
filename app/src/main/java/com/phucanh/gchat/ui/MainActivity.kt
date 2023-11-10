@@ -24,6 +24,7 @@ import com.google.firebase.database.ValueEventListener
 import com.phucanh.gchat.R
 import com.phucanh.gchat.databinding.ActivityMainBinding
 import com.phucanh.gchat.models.FriendRequest
+import com.phucanh.gchat.utils.ServiceUtils
 import com.phucanh.gchat.utils.StaticConfig
 import com.phucanh.gchat.viewModels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment?.findNavController()
         binding.bottomNav.setupWithNavController(navController!!)
         navController?.addOnDestinationChangedListener { controller, destination, _ ->
+            ServiceUtils.stopServiceFriendChat(applicationContext, false)
             if (destination.id == R.id.friendRequestFragment  || destination.id == R.id.searchFragment || destination.id == R.id.viewProfileFragment || destination.id==R.id.chatFragment) {
                 hideBottomNav()
             } else {
@@ -84,6 +86,10 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    override fun onStart() {
+        super.onStart()
+        ServiceUtils.stopServiceFriendChat(applicationContext, false)
+    }
     override fun onRestart() {
         super.onRestart()
 
@@ -157,6 +163,7 @@ class MainActivity : AppCompatActivity() {
         StaticConfig.UID = ""
         StaticConfig.LIST_FRIEND_ID.clear()
         StaticConfig.LIST_FRIEND_REQUEST_ID.clear()
+        ServiceUtils.startServiceFriendChat(applicationContext)
 
     }
     fun finishMain(){

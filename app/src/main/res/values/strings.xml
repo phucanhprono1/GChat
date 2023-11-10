@@ -40,4 +40,5 @@
     <string name="friend_request_sent">Friend request sent</string>
     <string name="confirm">Accept</string>
     <string name="delete">Delete</string>
+    <string name="sent_you_a_friend_request">sent you a friend request</string>
 </resources>

@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.phucanh.gchat.R
 import com.phucanh.gchat.models.FriendRequest
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -40,7 +41,7 @@ class FriendRequestAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, friendRequest: FriendRequest) {
-        Glide.with(holder.itemView).load(friendRequest.imageSender).into(holder.imageViewProfile)
+        Glide.with(holder.itemView).load(friendRequest.imageSender).apply(RequestOptions.circleCropTransform()).into(holder.imageViewProfile)
         Log.d("FriendRequestAdapter", "onBindViewHolder for position $position")
         holder.textViewName.text = friendRequest.nameSender
 

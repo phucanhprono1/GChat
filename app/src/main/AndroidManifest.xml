@@ -25,6 +25,7 @@
         <provider android:authorities="com.facebook.orca.provider.PlatformProvider" /> <!-- allows sharing to Messenger app -->
     </queries>
 
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -37,6 +38,17 @@
         android:theme="@style/Theme.GChat"
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
+        <service
+            android:name=".services.MyFirebaseMessagingService"
+            android:directBootAware="true"
+            android:exported="true">
+                <intent-filter>
+                    <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name="com.phucanh.gchat.services.FriendChatService"
+            android:exported="false"
+            android:persistent="true"/>
         <activity
             android:name=".ui.AddInfoActivity"
             android:exported="false" />

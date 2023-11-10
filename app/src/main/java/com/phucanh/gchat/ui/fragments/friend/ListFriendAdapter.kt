@@ -20,6 +20,11 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Query
 import com.phucanh.gchat.R
 import com.phucanh.gchat.models.ListFriend
+import com.phucanh.gchat.ui.fragments.friend.FriendFragment.Companion.mapChildListener
+import com.phucanh.gchat.ui.fragments.friend.FriendFragment.Companion.mapChildListenerOnline
+import com.phucanh.gchat.ui.fragments.friend.FriendFragment.Companion.mapMark
+import com.phucanh.gchat.ui.fragments.friend.FriendFragment.Companion.mapQuery
+import com.phucanh.gchat.ui.fragments.friend.FriendFragment.Companion.mapQueryOnline
 import com.phucanh.gchat.utils.ServiceUtils
 import com.phucanh.gchat.utils.StaticConfig
 import de.hdodenhof.circleimageview.CircleImageView
@@ -56,9 +61,12 @@ class ListFriendsAdapter(
         init {
             itemView.setOnClickListener {
                 listener.onClick(bindingAdapterPosition)
+                txtName.typeface = Typeface.DEFAULT
+                txtMessage.typeface = Typeface.DEFAULT
             }
             itemView.setOnLongClickListener {
                 longListener.onLongClick(it)
+
             }
         }
     }
@@ -81,13 +89,13 @@ class ListFriendsAdapter(
         mLongListener = listener
     }
 
-    companion object {
-        var mapQuery = mutableMapOf<String?, Query>()
-        var mapQueryOnline = mutableMapOf<String?, DatabaseReference>()
-        var mapChildListener = mutableMapOf<String?, ChildEventListener>()
-        var mapChildListenerOnline = mutableMapOf<String?, ChildEventListener>()
-        var mapMark = mutableMapOf<String?, Boolean>()
-    }
+//    companion object {
+//        var mapQuery = HashMap<String?, Query>()
+//        var mapQueryOnline = HashMap<String?, DatabaseReference>()
+//        var mapChildListener = HashMap<String?, ChildEventListener>()
+//        var mapChildListenerOnline = HashMap<String?, ChildEventListener>()
+//        var mapMark = HashMap<String?, Boolean>()
+//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemFriendViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.rc_item_friend, parent, false)
@@ -139,13 +147,13 @@ class ListFriendsAdapter(
                 holder.txtMessage.visibility = View.GONE
                 holder.txtTime.visibility = View.GONE
                 if (mapQuery[id] == null && mapChildListener[id] == null) {
-                    mapQuery[id] to
+                    mapQuery[id] =
                         FirebaseDatabase.getInstance(context.getString(R.string.firebase_database_url))
                             .getReference("message")
                             .child(idRoom)
                             .limitToLast(1)
 
-                    mapChildListener[id] to object : ChildEventListener {
+                    mapChildListener[id] = object : ChildEventListener {
                         override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                             val mapMessage = dataSnapshot.value as HashMap<*, *>
                             if (mapMark[id] != null) {
@@ -172,48 +180,52 @@ class ListFriendsAdapter(
                         override fun onCancelled(databaseError: DatabaseError) {}
                     }
 
-                    mapQuery[id]?.addChildEventListener(mapChildListener[id]!!)
-                    mapMark[id] to true
+                    mapQuery[id]!!.addChildEventListener(mapChildListener[id]!!)
+                    mapMark[id] = true
                 } else {
-                    mapQuery[id]?.removeEventListener(mapChildListener[id]!!)
-                    mapQuery[id]?.addChildEventListener(mapChildListener[id]!!)
-                    mapMark[id] to true
+                    mapQuery[id]!!.removeEventListener(mapChildListener[id]!!)
+                    mapQuery[id]!!.addChildEventListener(mapChildListener[id]!!)
+                    mapMark[id] = true
                 }
             }
 
-            if (listFriendItem.user.avata == StaticConfig.AVATA) {
-                Glide.with(holder.itemView).load(StaticConfig.AVATA).into(holder.avata)
-            } else {
-                Glide.with(holder.itemView).load(Uri.parse(listFriendItem.user.avata))
+
+            Glide.with(holder.itemView).load(Uri.parse(listFriendItem.user.avata))
                     .into(holder.avata)
-            }
+
 
             if (mapQueryOnline[id] == null && mapChildListenerOnline[id] == null && connected) {
-                mapQueryOnline[id] to
-                    FirebaseDatabase.getInstance(context.getString(R.string.firebase_database_url))
-                        .getReference("users")
-                        .child(id!!)
-                        .child("status")
+                mapQueryOnline[id] = FirebaseDatabase.getInstance(context.getString(R.string.firebase_database_url))
+                    .getReference("users")
+                    .child(id)
+                    .child("status")
 
-                mapChildListenerOnline[id] to object : ChildEventListener {
+                mapChildListenerOnline[id] = object : ChildEventListener {
                     override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                         if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
-                            Log.d("FriendsFragment add $id", dataSnapshot.value.toString())
-                            listFriendItem.user.status!!.isOnline = dataSnapshot.value as Boolean
-                            notifyDataSetChanged()
+                            Log.d("FriendsFragment add ", "$id ${dataSnapshot.getValue(Boolean::class.java).toString()}")
+                            if (listFriendItem.user != null && listFriendItem.user.status != null) {
+                                listFriendItem.user.status!!.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
+                                notifyDataSetChanged()
+                            }
                         }
                     }
 
                     override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
                         if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
-                            Log.d("FriendsFragment change $id", dataSnapshot.value.toString())
-                            listFriendItem.user.status!!.isOnline = dataSnapshot.value as Boolean
-                            notifyDataSetChanged()
+                            Log.d("FriendsFragment change ", "$id ${dataSnapshot.getValue(Boolean::class.java).toString()}")
+
+                            if (listFriendItem.user != null && listFriendItem.user.status != null) {
+                                listFriendItem.user.status!!.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
+                                notifyDataSetChanged()
+                            }
                         }
                     }
 
                     override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
+
                     override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
+
                     override fun onCancelled(databaseError: DatabaseError) {}
                 }
 

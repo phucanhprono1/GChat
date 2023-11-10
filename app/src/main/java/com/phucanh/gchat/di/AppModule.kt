@@ -9,6 +9,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.phucanh.gchat.room.AppDatabase
 import com.phucanh.gchat.room.FriendDao
+import com.phucanh.gchat.room.GroupDao
 
 import dagger.Module
 import dagger.Provides
@@ -47,5 +48,9 @@ object AppModule {
     @Provides
     fun provideFriendDao(appDatabase: AppDatabase): FriendDao {
         return appDatabase.friendDao()
+    }
+    @Provides
+    fun provideGroupDao(appDatabase: AppDatabase): GroupDao {
+        return appDatabase.groupDao()
     }
 }

@@ -85,17 +85,20 @@ class OptionsFragment : Fragment() {
         binding.infoRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.infoRecyclerView.adapter = userInfoAdapter
         mAuth = FirebaseAuth.getInstance()
-        if(mAuth.currentUser!=null){
+        if(mAuth.currentUser!=null && isAdded){
             viewModel.userDB.child(mAuth.currentUser!!.uid).addValueEventListener(object :
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     myAccount = snapshot.getValue(User::class.java)!!
                     binding.tvUsername.text = myAccount.name
                     userInfoAdapter.updateData(viewModel.listConfig(myAccount))
-                    Glide.with(requireContext())
-                        .load(myAccount.avata)
-                        .apply (RequestOptions().transform(CircleCrop()))
-                        .into(binding.imgAvatar)
+                    if(isAdded){
+                        Glide.with(requireContext())
+                            .load(myAccount.avata)
+                            .apply (RequestOptions().transform(CircleCrop()))
+                            .into(binding.imgAvatar)
+                    }
+
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -178,15 +181,13 @@ class OptionsFragment : Fragment() {
                     }
                 }
         }
-        private fun changeUserName(newName: String) {
-
-        }
 
         override fun getItemCount(): Int {
             return profileConfig.size
         }
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
             val label: TextView = view.findViewById(R.id.tv_title_1)
             val value: TextView = view.findViewById(R.id.tv_detail_1)
             val icon: ImageView = view.findViewById(R.id.img_icon_1)

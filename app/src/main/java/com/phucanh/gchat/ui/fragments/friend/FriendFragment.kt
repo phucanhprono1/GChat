@@ -16,6 +16,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.Query
 import com.phucanh.gchat.R
 import com.phucanh.gchat.databinding.FragmentFriendBinding
 import com.phucanh.gchat.models.Friend
@@ -31,6 +34,11 @@ class FriendFragment : Fragment() {
     companion object {
         fun newInstance() = FriendFragment()
         const val DELETE_FRIEND ="com.phucanh.gchat.DELETE_FRIEND"
+        var mapQuery = HashMap<String?, Query>()
+        var mapQueryOnline = HashMap<String?, DatabaseReference>()
+        var mapChildListener = HashMap<String?, ChildEventListener>()
+        var mapChildListenerOnline = HashMap<String?, ChildEventListener>()
+        var mapMark = HashMap<String?, Boolean>()
     }
 
     private val viewModel by activityViewModels<FriendViewModel>()
@@ -71,11 +79,12 @@ class FriendFragment : Fragment() {
 
         }
 
-
+        viewModel.detectFriendOnline.start()
 
         binding.swipeRefresh.setOnRefreshListener {
             if (ServiceUtils.isNetworkConnected(requireContext())) {
                 viewModel.refreshListFriend()
+
                 listFriendsAdapter?.notifyDataSetChanged()
             } else {
                 Snackbar.make(binding.root, "No internet connection", Snackbar.LENGTH_SHORT).show()
@@ -89,23 +98,27 @@ class FriendFragment : Fragment() {
             if (it != null) {
                 listFriendsAdapter = ListFriendsAdapter(requireContext(), it, newInstance(), findNavController())
                 listFriendsAdapter!!.notifyDataSetChanged()
+                listFriendsAdapter!!.updateData(it)
                 listFriendsAdapter!!.setOnClickListener(object : ListFriendsAdapter.OnClickListener {
                     override fun onClick(position: Int) {
                         val friend = it.listFriend?.get(position)
                         val bundle = Bundle()
                         Log.d("FriendFragment", "onClick: ${friend?.id}")
-                        bundle.putString("idFriend", friend?.id)
-                        bundle.putString("nameFriend", friend?.user?.name)
-                        bundle.putString("avataFriend", friend?.user?.avata)
-                        bundle.putString("idRoom", friend?.idRoom)
+                        var idFriend: ArrayList<CharSequence> = ArrayList()
+                        idFriend.add(friend?.id!!)
+                        bundle.putCharSequenceArrayList(StaticConfig.INTENT_KEY_CHAT_ID, idFriend)
+                        bundle.putString(StaticConfig.INTENT_KEY_CHAT_FRIEND, friend?.user?.name)
+                        bundle.putString(StaticConfig.INTENT_KEY_CHAT_ROOM_ID, friend?.idRoom)
+                        bundle.putString(StaticConfig.INTENT_KEY_CHAT_AVATA, friend?.user?.avata)
                         chatViewModel.mapAvatar = HashMap()
                         if(!friend?.user?.avata.equals(StaticConfig.STR_DEFAULT_URI)) {
-                            chatViewModel.mapAvatar[friend?.id] to friend?.user?.avata!!
+                            chatViewModel.mapAvatar[friend?.id!!] = friend?.user?.avata!!
                         }
                         else {
-                            chatViewModel.mapAvatar[friend?.id] to StaticConfig.STR_DEFAULT_URI
+                            chatViewModel.mapAvatar[friend?.id!!] = StaticConfig.STR_DEFAULT_URI
                         }
                         findNavController().navigate(R.id.action_friendFragment_to_chatFragment, bundle)
+                        mapMark.put(friend?.id!!, null == true)
                     }
 
                 })
@@ -128,7 +141,6 @@ class FriendFragment : Fragment() {
     }
     override fun onDestroy() {
         super.onDestroy()
-
         // Unregister the BroadcastReceiver in the onDestroy method
         requireContext().unregisterReceiver(deleteFriendReceiver)
     }

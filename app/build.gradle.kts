@@ -120,5 +120,6 @@ dependencies {
     implementation("androidx.room:room-ktx:2.3.0")
     // optional - RxJava support for Room
     implementation("androidx.room:room-rxjava2:2.3.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
 
 }
