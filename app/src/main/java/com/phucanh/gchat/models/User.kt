@@ -13,13 +13,14 @@ data class User(
     var dob: String? = null,
     var address: String? = null,
     var phonenumber: String? = null,
-    var bio: String? = null
-){
-
+    var bio: String? = null,
     @Ignore
-    var message: Message? = null
+    var message: Message? = null,
     @Ignore
     var status: Status? = null
+){
+
+
 
     @Ignore
     constructor(id: String, name: String?, email: String?, avt: String?) : this() {

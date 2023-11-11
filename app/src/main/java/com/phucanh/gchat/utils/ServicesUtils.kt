@@ -60,7 +60,7 @@ object ServiceUtils {
                 override fun onServiceConnected(className: ComponentName, service: IBinder) {
                     val binder = service as FriendChatService.LocalBinder
                     for (friend in binder.getService().listFriend?.listFriend!!) {
-                        binder.getService().mapMark[friend.idRoom] = true
+                        binder.getService().mapMark[friend?.idRoom] = true
                     }
                 }
 
@@ -89,7 +89,7 @@ object ServiceUtils {
     fun updateFriendStatus(context: Context, listFriend: ListFriend?) {
         if (isNetworkConnected(context) && listFriend != null && listFriend.listFriend != null) {
             for (friend in listFriend.listFriend!!) {
-                val fid = friend.id
+                val fid = friend?.id
                 FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
                     .getReference("users/$fid/status")
                     .addListenerForSingleValueEvent(object : ValueEventListener {

@@ -1,7 +1,7 @@
 package com.phucanh.gchat.models
 
 class ListFriend {
-    var listFriend: ArrayList<Friend>? = null
+    var listFriend: ArrayList<Friend?>? = null
 
 
     fun ListFriend() {
@@ -10,8 +10,8 @@ class ListFriend {
 
     fun getAvataById(id: String): String? {
         for (friend in listFriend!!) {
-            if (id == friend.id) {
-                return friend.user.avata
+            if (id == friend?.id  ) {
+                return friend?.user?.avata
             }
         }
         return ""

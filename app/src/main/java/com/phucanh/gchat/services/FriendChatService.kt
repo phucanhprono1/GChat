@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Query
 import com.phucanh.gchat.R
+import com.phucanh.gchat.models.Friend
 import com.phucanh.gchat.models.Group
 import com.phucanh.gchat.models.ListFriend
 import com.phucanh.gchat.room.FriendDao
@@ -56,7 +57,7 @@ class FriendChatService : Service() {
     override fun onCreate() {
 
         super.onCreate()
-
+        listFriend?.listFriend = friendDao.getAll() as ArrayList<Friend?>
 
         updateOnline = object : CountDownTimer(System.currentTimeMillis(), StaticConfig.TIME_TO_REFRESH) {
             override fun onTick(l: Long) {

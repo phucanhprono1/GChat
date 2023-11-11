@@ -86,7 +86,7 @@ class FriendViewModel @Inject constructor(
     fun getAllFriendInfo(index: Int) {
 
             if (index == listFriendID.size) {
-                listFriend!!.listFriend = friendDao.getAll() as ArrayList<Friend>
+                listFriend!!.listFriend = friendDao.getAll() as ArrayList<Friend?>
                 _listFriend.value = listFriend
                 detectFriendOnline.start()
             } else {
@@ -157,9 +157,9 @@ class FriendViewModel @Inject constructor(
 
         // Xóa bạn từ LiveData
         val currentListFriend = _listFriend.value?.listFriend?.toMutableList()
-        currentListFriend?.removeIf { it.id == idFriend }
+        currentListFriend?.removeIf { it?.id  == idFriend }
         val updatedListFriend = ListFriend()
-        updatedListFriend.listFriend = currentListFriend as ArrayList<Friend>
+        updatedListFriend.listFriend = currentListFriend as ArrayList<Friend?>
         _listFriend.value = updatedListFriend
 
         // Xóa bạn từ listFriendID

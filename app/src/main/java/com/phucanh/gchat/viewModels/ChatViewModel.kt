@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -32,39 +33,43 @@ class ChatViewModel @Inject constructor(val userReference: DatabaseReference,val
     // TODO: Implement the ViewModel
     var mapAvatar = mutableMapOf<String,String>()
     var listMessage = MutableLiveData<Conversation>()
+    var conversation = Conversation()
 
 
-    fun getListMessage(idRoom: String){
+    fun getListMessage(idRoom: String) {
+        val conversation = listMessage.value ?: Conversation()
 
-        firebaseDatabase.reference.child("message").child(idRoom).addChildEventListener(object : com.google.firebase.database.ChildEventListener{
+        val childEventListener = object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                var message = snapshot.getValue(Message::class.java)
-                val conversation = listMessage.value ?: Conversation()
-                if (!conversation.listMessageData.contains(message)) {
-                    conversation.listMessageData.add(message!!)
+                val message = snapshot.getValue(Message::class.java)
+                if (message != null && !conversation.listMessageData.contains(message)) {
+                    conversation.listMessageData.add(message)
                     listMessage.value = conversation
                 }
-
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-
+                // Handle message change if needed
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-
+                // Handle message removal if needed
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-
+                // Handle message movement if needed
             }
 
             override fun onCancelled(error: DatabaseError) {
-
+                // Handle error
             }
+        }
 
-        })
+        // Remove the existing child event listener before adding a new one
+        firebaseDatabase.reference.child("message").child(idRoom).removeEventListener(childEventListener)
 
+        // Add the new child event listener
+        firebaseDatabase.reference.child("message").child(idRoom).addChildEventListener(childEventListener)
     }
     fun sendMessage(content: String, idRoom: String, type: Int, receiverId: ArrayList<CharSequence>){
         val message: Message = Message()

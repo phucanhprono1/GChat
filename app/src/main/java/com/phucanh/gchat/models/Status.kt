@@ -2,11 +2,11 @@ package com.phucanh.gchat.models
 
 class Status {
 
-    var isOnline: Boolean = false
-    var timestamp: Long = 0
+    var isOnline: Boolean? = null
+    var timestamp: Long? = null
 
     constructor() {
-        isOnline = false
+        isOnline = null
         timestamp = 0
     }
 }

@@ -1,5 +1,6 @@
 package com.phucanh.gchat.ui.fragments.friend
 
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -24,6 +26,7 @@ import com.phucanh.gchat.databinding.FragmentFriendBinding
 import com.phucanh.gchat.models.Friend
 import com.phucanh.gchat.models.ListFriend
 import com.phucanh.gchat.ui.MainActivity
+import com.phucanh.gchat.ui.fragments.friend.ListFriendsAdapter.Companion.mapMark
 import com.phucanh.gchat.utils.ServiceUtils
 import com.phucanh.gchat.utils.StaticConfig
 import com.phucanh.gchat.viewModels.ChatViewModel
@@ -34,11 +37,12 @@ class FriendFragment : Fragment() {
     companion object {
         fun newInstance() = FriendFragment()
         const val DELETE_FRIEND ="com.phucanh.gchat.DELETE_FRIEND"
-        var mapQuery = HashMap<String?, Query>()
-        var mapQueryOnline = HashMap<String?, DatabaseReference>()
-        var mapChildListener = HashMap<String?, ChildEventListener>()
-        var mapChildListenerOnline = HashMap<String?, ChildEventListener>()
-        var mapMark = HashMap<String?, Boolean>()
+        const val CHAT_FRIEND = 12
+//        var mapQuery = HashMap<String?, Query>()
+//        var mapQueryOnline = HashMap<String?, DatabaseReference>()
+//        var mapChildListener = HashMap<String?, ChildEventListener>()
+//        var mapChildListenerOnline = HashMap<String?, ChildEventListener>()
+//        var mapMark = HashMap<String?, Boolean>()
     }
 
     private val viewModel by activityViewModels<FriendViewModel>()
@@ -55,21 +59,35 @@ class FriendFragment : Fragment() {
             }
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFriendBinding.inflate(inflater, container, false)
         return binding.root
+        setFragmentResultListener("chatFragmentResult") { _, result ->
+            val idFriend = result.getString("idFriend")
+            if (mapMark != null) {
+
+                ListFriendsAdapter.mapMark[idFriend] = false
+            }
+
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
+        val idFriend = arguments?.getString("idFriend")
+        if(idFriend!= null) {
+            ListFriendsAdapter.mapMark[idFriend] = null
+        }
         // TODO: Use the ViewModel\
         if (viewModel.listFriendID.size == 0) {
             binding.swipeRefresh.isRefreshing = true
-            viewModel.getListFriendUId()
+//            viewModel.getListFriendUId()
+            viewModel.refreshListFriend()
+            listFriendsAdapter?.notifyDataSetChanged()
         }
         else {
             binding.swipeRefresh.isRefreshing = false
@@ -117,8 +135,8 @@ class FriendFragment : Fragment() {
                         else {
                             chatViewModel.mapAvatar[friend?.id!!] = StaticConfig.STR_DEFAULT_URI
                         }
-                        findNavController().navigate(R.id.action_friendFragment_to_chatFragment, bundle)
-                        mapMark.put(friend?.id!!, null == true)
+                        findNavController().navigate(R.id.action_global_chatFragment, bundle)
+                        mapMark[friend?.id!!] = null
                     }
 
                 })
@@ -133,6 +151,7 @@ class FriendFragment : Fragment() {
                     }
 
                 })
+                Log.d("FriendFragment", "onActivityCreated: ${it.listFriend?.size}")
                 binding.recycleListFriend.adapter = listFriendsAdapter
                 binding.recycleListFriend.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 

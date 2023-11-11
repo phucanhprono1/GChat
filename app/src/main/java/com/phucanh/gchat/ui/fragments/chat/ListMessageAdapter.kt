@@ -18,14 +18,14 @@ import com.phucanh.gchat.utils.StaticConfig
 class ListMessageAdapter(
     private val context: Context,
     private val conversation: Conversation,
-    private val bitmapAvata: MutableMap<String, String>,
-    private val bitmapAvataUser: String
+    private val mapAvata: MutableMap<String, String>,
+    private val mapAvataUser: String
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val bitmapAvataDB= mutableMapOf<String, DatabaseReference>()
     fun updateData(conversation: Conversation) {
+
         this.conversation.listMessageData = conversation.listMessageData
-        notifyDataSetChanged()
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -44,7 +44,7 @@ class ListMessageAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ItemMessageFriendHolder) {
             holder.txtContent.text = conversation.listMessageData[position].content
-            val currentAvata = bitmapAvata[conversation.listMessageData[position].idSender]
+            val currentAvata = mapAvata[conversation.listMessageData[position].idSender]
             if (currentAvata != null) {
                 Glide.with(holder.itemView).load(currentAvata).into(holder.avata)
             } else {
@@ -73,7 +73,7 @@ class ListMessageAdapter(
             }
         } else if (holder is ItemMessageUserHolder) {
             holder.txtContent.text = conversation.listMessageData[position].content
-            if (bitmapAvataUser != null) {
+            if (mapAvataUser != null) {
                 Glide.with(holder.itemView).load(StaticConfig.AVATA).into(holder.avata)
             }
         }
