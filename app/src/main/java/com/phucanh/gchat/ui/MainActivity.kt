@@ -49,11 +49,13 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment?.findNavController()
         binding.bottomNav.setupWithNavController(navController!!)
         navController?.addOnDestinationChangedListener { controller, destination, _ ->
-            ServiceUtils.stopServiceFriendChat(applicationContext, false)
-            if (destination.id == R.id.friendRequestFragment  || destination.id == R.id.searchFragment || destination.id == R.id.viewProfileFragment || destination.id==R.id.chatFragment) {
+
+            if (destination.id == R.id.friendRequestFragment  || destination.id == R.id.searchFragment || destination.id == R.id.viewProfileFragment || destination.id==R.id.chatFragment || destination.id == R.id.addGroupFragment) {
                 hideBottomNav()
+                ServiceUtils.stopServiceFriendChat(applicationContext, false)
             } else {
                 showBottomNav()
+                ServiceUtils.stopServiceFriendChat(applicationContext, false)
             }
         }
         if(StaticConfig.UID == null || StaticConfig.UID !=mAuth.currentUser?.uid){

@@ -10,11 +10,12 @@ import com.phucanh.gchat.R
 import com.phucanh.gchat.models.Configuration
 import com.phucanh.gchat.models.User
 import com.phucanh.gchat.room.FriendDao
+import com.phucanh.gchat.room.GroupDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class OptionsViewModel @Inject constructor(private val context: Context, val friendDao: FriendDao, application: Application) : AndroidViewModel(application) {
+class OptionsViewModel @Inject constructor(private val context: Context, val friendDao: FriendDao,val groupDao: GroupDao, application: Application) : AndroidViewModel(application) {
     fun listConfig(myAccount: User): List<Configuration> {
         return listOf(
             Configuration(R.mipmap.ic_email, context.getString(R.string.email), myAccount.email!!),
@@ -27,6 +28,9 @@ class OptionsViewModel @Inject constructor(private val context: Context, val fri
     val userDB: DatabaseReference = FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/").reference.child("users")
     fun deleteAllFriend(){
         friendDao.deleteAll()
+    }
+    fun deleteAllGroup(){
+        groupDao.deleteAll()
     }
 
 }

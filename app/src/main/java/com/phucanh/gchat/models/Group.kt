@@ -10,8 +10,10 @@ data class Group (
     var avatar: String? = null,
     var admin: String? = null,
 ){
+    constructor() : this("")
+
     @Ignore
     var listFriend: ListFriend? = null
     @Ignore
-    var members: ArrayList<String>? = null
+    var members: ArrayList<String> = ArrayList()
 }

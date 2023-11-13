@@ -26,7 +26,8 @@ import com.phucanh.gchat.databinding.FragmentFriendBinding
 import com.phucanh.gchat.models.Friend
 import com.phucanh.gchat.models.ListFriend
 import com.phucanh.gchat.ui.MainActivity
-import com.phucanh.gchat.ui.fragments.friend.ListFriendsAdapter.Companion.mapMark
+
+
 import com.phucanh.gchat.utils.ServiceUtils
 import com.phucanh.gchat.utils.StaticConfig
 import com.phucanh.gchat.viewModels.ChatViewModel
@@ -38,17 +39,13 @@ class FriendFragment : Fragment() {
         fun newInstance() = FriendFragment()
         const val DELETE_FRIEND ="com.phucanh.gchat.DELETE_FRIEND"
         const val CHAT_FRIEND = 12
-//        var mapQuery = HashMap<String?, Query>()
-//        var mapQueryOnline = HashMap<String?, DatabaseReference>()
-//        var mapChildListener = HashMap<String?, ChildEventListener>()
-//        var mapChildListenerOnline = HashMap<String?, ChildEventListener>()
-//        var mapMark = HashMap<String?, Boolean>()
+
     }
 
     private val viewModel by activityViewModels<FriendViewModel>()
     private val chatViewModel by activityViewModels<ChatViewModel>()
     private lateinit var binding: FragmentFriendBinding
-    var listFriendsAdapter: ListFriendsAdapter? = null
+    var listFriendsAdapter: ListFriendAdapter? = null
     private val deleteFriendReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == DELETE_FRIEND) {
@@ -68,9 +65,9 @@ class FriendFragment : Fragment() {
         return binding.root
         setFragmentResultListener("chatFragmentResult") { _, result ->
             val idFriend = result.getString("idFriend")
-            if (mapMark != null) {
+            if (viewModel.mapMark != null) {
 
-                ListFriendsAdapter.mapMark[idFriend] = false
+                viewModel.mapMark[idFriend] = false
             }
 
         }
@@ -80,7 +77,7 @@ class FriendFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         val idFriend = arguments?.getString("idFriend")
         if(idFriend!= null) {
-            ListFriendsAdapter.mapMark[idFriend] = null
+            viewModel.mapMark[idFriend] = null
         }
         // TODO: Use the ViewModel\
         if (viewModel.listFriendID.size == 0) {
@@ -114,10 +111,10 @@ class FriendFragment : Fragment() {
         viewModel._listFriend.observe(viewLifecycleOwner) {
             binding.swipeRefresh.isRefreshing = it == null
             if (it != null) {
-                listFriendsAdapter = ListFriendsAdapter(requireContext(), it, newInstance(), findNavController())
+                listFriendsAdapter = ListFriendAdapter(requireContext(),it, findNavController())
                 listFriendsAdapter!!.notifyDataSetChanged()
-                listFriendsAdapter!!.updateData(it)
-                listFriendsAdapter!!.setOnClickListener(object : ListFriendsAdapter.OnClickListener {
+//                listFriendsAdapter!!.updateData(it)
+                listFriendsAdapter!!.setOnClickListener(object : ListFriendAdapter.OnClickListener {
                     override fun onClick(position: Int) {
                         val friend = it.listFriend?.get(position)
                         val bundle = Bundle()
@@ -136,11 +133,11 @@ class FriendFragment : Fragment() {
                             chatViewModel.mapAvatar[friend?.id!!] = StaticConfig.STR_DEFAULT_URI
                         }
                         findNavController().navigate(R.id.action_global_chatFragment, bundle)
-                        mapMark[friend?.id!!] = null
+                        viewModel.mapMark[friend?.id!!] = null
                     }
 
                 })
-                listFriendsAdapter!!.setOnLongClickListener(object : ListFriendsAdapter.OnLongClickListener {
+                listFriendsAdapter!!.setOnLongClickListener(object : ListFriendAdapter.OnLongClickListener {
                     override fun onLongClick(view: View): Boolean {
                         val position = binding.recycleListFriend.getChildAdapterPosition(view)
 

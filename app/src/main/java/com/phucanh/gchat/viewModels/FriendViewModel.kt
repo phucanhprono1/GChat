@@ -6,14 +6,17 @@ import android.os.CountDownTimer
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 import com.phucanh.gchat.models.Friend
 import com.phucanh.gchat.models.ListFriend
 import com.phucanh.gchat.room.FriendDao
+import com.phucanh.gchat.ui.fragments.friend.FriendFragment
 import com.phucanh.gchat.utils.ServiceUtils
 import com.phucanh.gchat.utils.StaticConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +31,11 @@ class FriendViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
     val _listFriend: MutableLiveData<ListFriend?> = MutableLiveData()
     var listFriend: ListFriend= ListFriend()
-
+    var mapQuery = HashMap<String?, Query?>()
+    var mapQueryOnline = HashMap<String?, DatabaseReference?>()
+    var mapChildListener = HashMap<String?, ChildEventListener?>()
+    var mapChildListenerOnline = HashMap<String?, ChildEventListener>()
+    var mapMark = HashMap<String?, Boolean?>()
     var index = 0
     private val friendRef = firebaseDatabase.getReference("friend")
     @Inject
@@ -53,13 +60,113 @@ class FriendViewModel @Inject constructor(
         }
     }
 
+    fun updateMessageAndStatus(listFriend: ListFriend) {
+        for(position in 0..listFriend.listFriend!!.size-1){
+            var id = listFriend.listFriend!![position]!!.user.id
+            var idRoom = listFriend.listFriend!![position]!!.idRoom
+            if (mapQuery[id] == null && mapChildListener[id] == null) {
+                Log.d("FriendsAdapter", "Message Content: ${listFriend.listFriend!![position]!!.user.message?.content}")
+                Log.d("FriendsAdapter", "Message Timestamp: ${listFriend.listFriend!![position]!!.user.message?.timestamp}")
+                mapQuery[id] =
+                    FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                        .getReference("message")
+                        .child(idRoom)
+                        .limitToLast(1)
 
+                val childEventListener = object : ChildEventListener {
+                    override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+                        val mapMessage = dataSnapshot.value as HashMap<*, *>?
+                        if (mapMark[id] != null) {
+                            if (!mapMark[id]!!) {
+                                mapMark[id] = true
+
+                                // Update message content
+                                listFriend.listFriend!![position]!!.user.message?.content =
+                                    "$id${mapMessage!!["content"]}"
+                                Log.d("FriendsAdapter", "Message Content: ${listFriend.listFriend!![position]!!.user.message?.content}")
+
+                                // Notify the adapter on the UI thread
+
+                            } else {
+                                listFriend.listFriend!![position]!!.user.message?.content =
+                                    mapMessage!!["content"] as String
+                            }
+                        } else {
+                            listFriend.listFriend!![position]!!.user.message?.content =
+                                mapMessage!!["content"] as String
+                        }
+                        listFriend.listFriend!![position]!!.user.message?.timestamp = mapMessage["timestamp"] as Long
+                    }
+
+
+                    override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
+                    override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
+                    override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
+                    override fun onCancelled(databaseError: DatabaseError) {}
+                }
+                mapChildListener[id] = childEventListener
+//                    mapQuery[id]?.addChildEventListener(childEventListener)
+                mapChildListener[id]?.let { mapQuery[id]?.addChildEventListener(it) }
+                Log.d("FriendsAdapter", "mapQuery[$id]: ${mapQuery[id]}")
+                mapMark[id] = true
+            }
+            else {
+                mapChildListener[id]?.let { mapQuery[id]?.removeEventListener(it) }
+                mapChildListener[id]?.let { mapQuery[id]?.addChildEventListener(it) }
+                mapMark[id] = true
+            }
+            if (mapQueryOnline[id] == null && mapChildListenerOnline[id] == null) {
+                mapQueryOnline[id] = FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                    .getReference("users")
+                    .child(id)
+                    .child("status")
+
+                mapChildListenerOnline[id] = object : ChildEventListener {
+                    override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+                        if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
+
+                            if (listFriend.listFriend!![position]!!.user != null && listFriend.listFriend!![position]!!.user.status == null) {
+                                listFriend.listFriend!![position]!!.user.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
+                                Log.d("FriendsAdapter", "Is Online: ${listFriend.listFriend!![position]!!.user.status?.isOnline}")
+
+
+                            }
+
+                        }
+                    }
+
+                    override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
+                        if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
+
+
+                            if (listFriend.listFriend!![position]!!.user != null && listFriend.listFriend!![position]!!.user.status != null) {
+                                listFriend.listFriend!![position]!!.user.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
+
+
+                            }
+                        }
+                    }
+
+                    override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
+
+                    override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
+
+                    override fun onCancelled(databaseError: DatabaseError) {}
+                }
+                mapChildListenerOnline[id]?.let { mapQueryOnline[id]?.addChildEventListener(it) }
+            }
+        }
+
+
+
+    }
     fun refreshListFriend() {
         friendDao.deleteAll()
         StaticConfig.LIST_FRIEND_ID.clear()
         detectFriendOnline.cancel()
         listFriendID.clear()
         index = 0
+//        _listFriend.value = null
         getListFriendUId()
     }
 
@@ -87,6 +194,7 @@ class FriendViewModel @Inject constructor(
 
             if (index == listFriendID.size) {
                 listFriend!!.listFriend = friendDao.getAll() as ArrayList<Friend?>
+                updateMessageAndStatus(listFriend)
                 _listFriend.value = listFriend
                 detectFriendOnline.start()
             } else {
@@ -154,7 +262,7 @@ class FriendViewModel @Inject constructor(
                 }
             })
         friendDao.deleteFriendById(idFriend)
-
+        StaticConfig.LIST_FRIEND_ID.remove(idFriend)
         // Xóa bạn từ LiveData
         val currentListFriend = _listFriend.value?.listFriend?.toMutableList()
         currentListFriend?.removeIf { it?.id  == idFriend }

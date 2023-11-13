@@ -19,9 +19,13 @@
     </fragment>
     <fragment
         android:id="@+id/groupFragment"
-        android:name="com.phucanh.gchat.ui.fragments.GroupFragment"
+        android:name="com.phucanh.gchat.ui.fragments.group.GroupFragment"
         android:label="fragment_group"
-        tools:layout="@layout/fragment_group" />
+        tools:layout="@layout/fragment_group" >
+        <action
+            android:id="@+id/action_groupFragment_to_addGroupFragment"
+            app:destination="@id/addGroupFragment" />
+    </fragment>
     <fragment
         android:id="@+id/optionsFragment"
         android:name="com.phucanh.gchat.ui.fragments.OptionsFragment"
@@ -61,4 +65,9 @@
         android:id="@+id/action_global_chatFragment"
         app:destination="@+id/chatFragment"
         />
+    <fragment
+        android:id="@+id/addGroupFragment"
+        android:name="com.phucanh.gchat.ui.fragments.group.add_group.AddGroupFragment"
+        android:label="fragment_add_group"
+        tools:layout="@layout/fragment_add_group" />
 </navigation>
