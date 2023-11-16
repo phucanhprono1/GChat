@@ -73,12 +73,12 @@ class ListPeopleAdapter(
 
         friendHolder.checkBox.setOnCheckedChangeListener { _, b ->
             if (b) {
-                listIDChoose.add(id)
-                listIDRemove.remove(id)
+//                listIDChoose.add(id)
+//                listIDRemove.remove(id)
                 friendSelectionListener.onFriendSelected(id)
             } else {
-                listIDRemove.add(id)
-                listIDChoose.remove(id)
+//                listIDRemove.add(id)
+//                listIDChoose.remove(id)
                 friendSelectionListener.onFriendDeselected(id)
             }
 

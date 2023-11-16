@@ -59,8 +59,11 @@ object ServiceUtils {
             connectionServiceFriendChatForStart = object : ServiceConnection {
                 override fun onServiceConnected(className: ComponentName, service: IBinder) {
                     val binder = service as FriendChatService.LocalBinder
-                    for (friend in binder.getService().listFriend?.listFriend!!) {
-                        binder.getService().mapMark[friend?.idRoom] = true
+                    val listFriend = binder.getService().listFriend?.listFriend
+                    if (listFriend != null) {
+                        for (friend in listFriend) {
+                            binder.getService().mapMark[friend?.idRoom] = true
+                        }
                     }
                 }
 

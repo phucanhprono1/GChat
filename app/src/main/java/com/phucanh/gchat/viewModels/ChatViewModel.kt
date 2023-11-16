@@ -1,6 +1,7 @@
 package com.phucanh.gchat.viewModels
 
 import android.app.Application
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -34,7 +35,10 @@ class ChatViewModel @Inject constructor(val userReference: DatabaseReference,val
     var mapAvatar = mutableMapOf<String,String>()
     var listMessage = MutableLiveData<Conversation>()
     var conversation = Conversation()
-
+    var imgUri:Uri? = null
+    var imgUriLink = ""
+    var roomId: String = ""
+    var roomName: String = ""
 
     fun getListMessage(idRoom: String) {
         val conversation = listMessage.value ?: Conversation()
@@ -104,20 +108,24 @@ class ChatViewModel @Inject constructor(val userReference: DatabaseReference,val
             "Preparing to send notification with token: $receiverUserId $notificationMessage"
         )
         Log.d("FCM", "Preparing to send notification")
-        // Lấy FCM token của người nhận tin nhắn
 
         userReference.child(receiverUserId).addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     val receiverUser = dataSnapshot.getValue(User::class.java)
-                    val fcmToken: String = receiverUser?.fcmToken!!
+                    if (receiverUser != null) {
+                        if (receiverUser.fcmToken !=null){
+                            val fcmToken: String = receiverUser?.fcmToken!!
 
-                    // Gửi thông báo đẩy bằng FCM
-                    if (fcmToken != null && !fcmToken.isEmpty()) {
-                        Log.d("FCM", "Sending notification$fcmToken")
-                        sendNotificationUsingFCM(fcmToken, notificationMessage)
+                            // Gửi thông báo đẩy bằng FCM
+                            if (fcmToken != null && !fcmToken.isEmpty() && fcmToken != StaticConfig.FCMTOKEN) {
+                                Log.d("FCM", "Sending notification$fcmToken")
+                                sendNotificationUsingFCM(fcmToken, notificationMessage)
+                            }
+                        }
                     }
+
                 }
             }
 
@@ -145,8 +153,8 @@ class ChatViewModel @Inject constructor(val userReference: DatabaseReference,val
 //            sending.put("message", message);
             val jsonObject = JSONObject()
             val notificationObj = JSONObject()
-            notificationObj.put("title", StaticConfig.NAME)
-            notificationObj.put("body", notificationMessage)
+            notificationObj.put("title", roomName)
+            notificationObj.put("body", "${StaticConfig.NAME}: $notificationMessage")
             val dataObj = JSONObject()
             jsonObject.put("notification", notificationObj)
             jsonObject.put("to", fcmToken)

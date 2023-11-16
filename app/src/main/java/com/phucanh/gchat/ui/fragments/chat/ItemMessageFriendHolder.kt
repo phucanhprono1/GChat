@@ -9,6 +9,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class ItemMessageFriendHolder  (itemView: View) : RecyclerView.ViewHolder(itemView) {
     var txtContent: TextView
+    var txtName: TextView
     var imgContent: ImageView
     var avata: CircleImageView
 
@@ -16,5 +17,6 @@ class ItemMessageFriendHolder  (itemView: View) : RecyclerView.ViewHolder(itemVi
         txtContent = itemView.findViewById<View>(R.id.textContentFriend) as TextView
         avata = itemView.findViewById<View>(R.id.imageFriend) as CircleImageView
         imgContent = itemView.findViewById<View>(R.id.imageMessageFriend) as ImageView
+        txtName = itemView.findViewById<View>(R.id.nameFriend) as TextView
     }
 }

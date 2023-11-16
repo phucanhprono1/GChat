@@ -10,30 +10,43 @@
         android:id="@+id/imageFriend"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_marginStart="5dp"
-        android:src="@drawable/default_avata"/>
+        android:layout_marginTop="1dp"
+        android:src="@drawable/default_avata" />
 
+    <TextView
+        android:id="@+id/nameFriend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_toEndOf="@id/imageFriend"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:textSize="@dimen/_10ssp"
+        android:text="sdfdsdsadsada"
+         />
     <TextView
         android:id="@+id/textContentFriend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/_2sdp"
         android:background="@drawable/rounded_corner2"
         android:padding="10dp"
-        android:layout_alignParentTop="true"
+
         android:layout_toEndOf="@id/imageFriend"
+        android:layout_below="@+id/nameFriend"
         android:layout_marginStart="5dp"
-        android:layout_marginEnd="20dp"
-        android:text="A"
+        android:text="Adsf"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#000" />
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_width="@dimen/_70sdp"
+        android:layout_height="@dimen/_80sdp"
+
         android:layout_toEndOf="@id/imageFriend"
+        android:layout_below="@+id/nameFriend"
         android:layout_marginStart="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_10sdp"

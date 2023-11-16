@@ -24,6 +24,7 @@ import com.facebook.login.LoginManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.phucanh.gchat.R
 import com.phucanh.gchat.databinding.FragmentOptionsBinding
@@ -54,6 +55,8 @@ class OptionsFragment : Fragment() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == SIGN_OUT) {
                 // Handle the sign out action here
+                FirebaseDatabase.getInstance(getString(R.string.firebase_database_url)).reference.child("users").child(mAuth.currentUser!!.uid).child("fcmToken").removeValue()
+
                 mAuth.signOut()
                 LoginManager.getInstance().logOut()
                 Intent().also {

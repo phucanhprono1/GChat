@@ -2,6 +2,7 @@ package com.phucanh.gchat.ui.fragments.chat
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -43,38 +44,46 @@ class ListMessageAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ItemMessageFriendHolder) {
-            holder.txtContent.text = conversation.listMessageData[position].content
-            val currentAvata = mapAvata[conversation.listMessageData[position].idSender]
-            if (currentAvata != null) {
-                Glide.with(holder.itemView).load(currentAvata).into(holder.avata)
-            } else {
-                val id = conversation.listMessageData[position].idSender
-                if (bitmapAvataDB[id] == null) {
-                    bitmapAvataDB[id] to FirebaseDatabase.getInstance(context.getString(R.string.firebase_database_url))
-                            .getReference().child("users/$id/avata")
-                    bitmapAvataDB[id]?.addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            val avataStr = dataSnapshot.value as String?
-                            if (avataStr != null) {
-                                if (avataStr != StaticConfig.AVATA) {
-                                    ChatFragment.mapAvataFriend.put(id!!, avataStr)
-                                } else {
-                                    ChatFragment.mapAvataFriend.put(id!!, StaticConfig.AVATA)
-                                }
-                                notifyDataSetChanged()
-                            }
-                        }
 
-                        override fun onCancelled(databaseError: DatabaseError) {
-                            // Handle onCancelled event
-                        }
-                    })
-                }
+            if(conversation.listMessageData[position].type ==1){
+                Glide.with(holder.itemView)
+                    .load(conversation.listMessageData[position].content)
+                    .override(400, 600)  // width và height là kích thước mới bạn muốn
+                    .into(holder.imgContent)
+                Glide.with(holder.itemView).load(conversation.listMessageData[position].content).into(holder.imgContent)
+                holder.imgContent.visibility = View.VISIBLE
+                holder.txtContent.visibility = View.GONE
+            }
+            else if (conversation.listMessageData[position].type ==0){
+                holder.txtContent.text = conversation.listMessageData[position].content
+                holder.txtName.text = conversation.listMessageData[position].nameSender
+                holder.imgContent.visibility = View.GONE
+                holder.txtContent.visibility = View.VISIBLE
+            }
+            val currentAvata = mapAvata[conversation.listMessageData[position].idSender]
+            if(currentAvata==null){
+                holder.avata.setImageResource(R.drawable.default_avata)
+            }
+            else{
+                Glide.with(holder.itemView).load(currentAvata).into(holder.avata)
             }
         } else if (holder is ItemMessageUserHolder) {
-            holder.txtContent.text = conversation.listMessageData[position].content
-            if (mapAvataUser != null) {
-                Glide.with(holder.itemView).load(StaticConfig.AVATA).into(holder.avata)
+
+
+            Glide.with(holder.itemView).load(StaticConfig.AVATA).into(holder.avata)
+
+            if(conversation.listMessageData[position].type ==1){
+                Glide.with(holder.itemView)
+                    .load(conversation.listMessageData[position].content)
+                    .override(400, 600)  // width và height là kích thước mới bạn muốn
+                    .into(holder.imgContent)
+                holder.imgContent.visibility = View.VISIBLE
+                holder.txtContent.visibility = View.GONE
+            }
+            else if (conversation.listMessageData[position].type ==0){
+                holder.txtContent.text = conversation.listMessageData[position].content
+                holder.imgContent.visibility = View.GONE
+                holder.txtContent.visibility = View.VISIBLE
             }
         }
     }

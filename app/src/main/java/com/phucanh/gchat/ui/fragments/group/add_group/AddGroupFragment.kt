@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -44,8 +45,7 @@ class AddGroupFragment : Fragment(), ListPeopleAdapter.FriendSelectionListener {
 
     companion object {
         fun newInstance() = AddGroupFragment()
-        var listIDChoose = HashSet<String>()
-        var listIDRemove = HashSet<String>()
+
     }
     @Inject
     lateinit var storageReference: StorageReference
@@ -53,6 +53,17 @@ class AddGroupFragment : Fragment(), ListPeopleAdapter.FriendSelectionListener {
     private lateinit var binding: FragmentAddGroupBinding
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            if(arguments?.getString("groupId")!=null){
+                viewModel.isEditGroup = false
+                viewModel.idGroup = null
+                viewModel.avatarGroup = null
+                viewModel.avatarGroupUri = null
+                viewModel.nameGroup = null
+                viewModel.group = null
+                var bundle = Bundle()
+                bundle.putString("groupEdited","edited")
+                setFragmentResult("addGroupFragmentResult", bundle)
+            }
             findNavController().popBackStack()
         }
     }
@@ -74,14 +85,17 @@ class AddGroupFragment : Fragment(), ListPeopleAdapter.FriendSelectionListener {
             binding.recycleListFriend.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
 
         }
-        if(arguments?.getString("idGroup")!=null){
+        if(arguments?.getString("groupId")!=null){
             viewModel.isEditGroup = true
-            viewModel.idGroup = arguments?.getString("idGroup")
+            viewModel.idGroup = arguments?.getString("groupId")
+            viewModel.avatarGroup = arguments?.getString("groupAvatar")
+
             binding.txtActionName.text = "Save"
-            binding.editGroupName.setText(arguments?.getString("nameGroup"))
+            binding.editGroupName.setText(arguments?.getString("groupName"))
             if(isAdded){
-                Glide.with(requireContext()).load(arguments?.getString("avatarGroup")).into(binding.imageGroup)
+                Glide.with(requireContext()).load(arguments?.getString("groupAvatar")).into(binding.imageGroup)
             }
+            viewModel.group = viewModel.getGroup(arguments?.getString("groupId")!!)
 
         }
         binding.linearLayoutavt1.setOnClickListener {
@@ -92,16 +106,30 @@ class AddGroupFragment : Fragment(), ListPeopleAdapter.FriendSelectionListener {
         binding.btnAddGroup.setOnClickListener {
 
             if(viewModel.listIDChoose.size>=3 && viewModel.nameGroup!=null && viewModel.avatarGroup!=null){
-                viewModel.nameGroup = binding.editGroupName.text.toString()
-                viewModel.addGroup()
-                viewModel.listIDChoose.clear()
-                viewModel.listIDRemove.clear()
-                viewModel.avatarGroup = null
-                viewModel.avatarGroupUri = null
-                viewModel.nameGroup = null
-                viewModel.isEditGroup = false
-                viewModel.group = null
+                if(viewModel.isEditGroup){
+                    viewModel.nameGroup = binding.editGroupName.text.toString()
+                    viewModel.editGroup()
+                    var bundle = Bundle()
+                    bundle.putBoolean("isSuccess",true)
+                    setFragmentResult("addGroupFragmentResult", bundle)
+
+                }
+                else{
+                    viewModel.nameGroup = binding.editGroupName.text.toString()
+                    viewModel.createGroup()
+
+                }
+//                viewModel.listIDChoose.clear()
+//                viewModel.listIDRemove.clear()
+//                viewModel.avatarGroup = null
+//                viewModel.avatarGroupUri = null
+//                viewModel.nameGroup = null
+//                viewModel.isEditGroup = false
+//                viewModel.group = null
                 findNavController().popBackStack()
+            }
+            else{
+                Toast.makeText(requireContext(),"Please fill all information",Toast.LENGTH_SHORT).show()
             }
 
         }

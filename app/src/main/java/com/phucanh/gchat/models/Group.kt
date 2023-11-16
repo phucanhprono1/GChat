@@ -15,5 +15,5 @@ data class Group (
     @Ignore
     var listFriend: ListFriend? = null
     @Ignore
-    var members: ArrayList<String> = ArrayList()
+    var members: ArrayList<String?> = ArrayList()
 }

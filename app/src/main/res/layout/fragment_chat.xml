@@ -81,22 +81,26 @@
         >
 
     </androidx.recyclerview.widget.RecyclerView>
+
     <EditText
         android:id="@+id/editWriteMessage"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="2dp"
         android:background="@drawable/edittext_boder"
         android:drawablePadding="20dp"
+        android:hint="Type your message"
         android:inputType="textLongMessage"
         android:maxLines="1"
         android:paddingLeft="@dimen/_7sdp"
         android:paddingRight="@dimen/_7sdp"
         android:textColorHint="#aeafaf"
-        android:textSize="15sp"
-        android:hint="Type your message"/>
+        android:textSize="15sp" />
+
     <ImageView
         android:id="@+id/btnSend"
         android:layout_width="@dimen/_40sdp"

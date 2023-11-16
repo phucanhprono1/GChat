@@ -43,4 +43,5 @@
     <string name="sent_you_a_friend_request">sent you a friend request</string>
     <string name="create_group">Create Group</string>
     <string name="enter_group_name">Enter group name</string>
+    <string name="choose_image_from">Choose image from</string>
 </resources>

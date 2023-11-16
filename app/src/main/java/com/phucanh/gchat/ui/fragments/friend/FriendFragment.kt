@@ -63,14 +63,7 @@ class FriendFragment : Fragment() {
     ): View? {
         binding = FragmentFriendBinding.inflate(inflater, container, false)
         return binding.root
-        setFragmentResultListener("chatFragmentResult") { _, result ->
-            val idFriend = result.getString("idFriend")
-            if (viewModel.mapMark != null) {
 
-                viewModel.mapMark[idFriend] = false
-            }
-
-        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -78,6 +71,14 @@ class FriendFragment : Fragment() {
         val idFriend = arguments?.getString("idFriend")
         if(idFriend!= null) {
             viewModel.mapMark[idFriend] = null
+        }
+        setFragmentResultListener("chatFragmentResult") { _, result ->
+            val idFriend = result.getString("idFriend")
+            if (viewModel.mapMark != null) {
+
+                viewModel.mapMark[idFriend] = false
+            }
+
         }
         // TODO: Use the ViewModel\
         if (viewModel.listFriendID.size == 0) {
@@ -109,8 +110,9 @@ class FriendFragment : Fragment() {
         val filter = IntentFilter(DELETE_FRIEND)
         requireContext().registerReceiver(deleteFriendReceiver, filter)
         viewModel._listFriend.observe(viewLifecycleOwner) {
-            binding.swipeRefresh.isRefreshing = it == null
-            if (it != null) {
+            if(it==null)binding.swipeRefresh.isRefreshing = true
+            else{
+                binding.swipeRefresh.isRefreshing = false
                 listFriendsAdapter = ListFriendAdapter(requireContext(),it, findNavController())
                 listFriendsAdapter!!.notifyDataSetChanged()
 //                listFriendsAdapter!!.updateData(it)

@@ -12,8 +12,8 @@ interface GroupDao {
     fun insert(room: GroupMember)
     @Query("SELECT * FROM groupMember")
     fun getAll(): List<GroupMember>
-    @Query("SELECT * FROM groupMember WHERE id = :id")
-    fun getRoomById(id: String): GroupMember
+    @Query("SELECT * FROM groupMember WHERE group_id = :id")
+    fun getRoomById(id: String): List<GroupMember>
     @Query("DELETE FROM groupMember WHERE id = :id and group_id = :groupId")
     fun deleteRoomMemberById(id: String, groupId: String)
     @Query("DELETE FROM groupMember WHERE group_id = :groupId")

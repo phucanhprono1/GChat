@@ -82,6 +82,7 @@ class MainActivity : AppCompatActivity() {
                 StaticConfig.BIO = snapshot.child("bio").value.toString()
                 StaticConfig.JOINEDDATE = snapshot.child("joinedDate").value.toString()
                 StaticConfig.PHONENUMBER = snapshot.child("phonenumber").value.toString()
+                StaticConfig.FCMTOKEN = snapshot.child("fcmToken").value.toString()
             }
             override fun onCancelled(error: DatabaseError) {
             }

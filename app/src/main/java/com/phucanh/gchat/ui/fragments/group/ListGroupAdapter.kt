@@ -2,6 +2,7 @@ package com.phucanh.gchat.ui.fragments.group
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.Menu
@@ -16,45 +17,30 @@ import com.phucanh.gchat.models.Group
 import com.phucanh.gchat.utils.StaticConfig
 import de.hdodenhof.circleimageview.CircleImageView
 
-class ListGroupAdapter(private val context: Context, private val listGroup: ArrayList<Group>,private val clickListener : ItemClickListener) :
+class ListGroupAdapter(private val context: Context,
+                       private val listGroup: ArrayList<Group>
+                       ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private lateinit var clickListener : ItemClickListener
+    private lateinit var btnMoreClickListener: BtnMoreClickListener
     interface ItemClickListener{
-        fun onItemClick(group: Group)
+        fun onItemClick(position: Int)
     }
-    inner class ItemGroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    View.OnCreateContextMenuListener {
-        var iconGroup: CircleImageView = itemView.findViewById(R.id.icon_group)
-        var txtGroupName: TextView = itemView.findViewById(R.id.txtName)
-        var btnMore: ImageButton = itemView.findViewById(R.id.btnMoreAction)
+    interface BtnMoreClickListener {
+        fun onBtnMoreClick(position: Int, view: View)
+    }
+    fun setOnItemClickListener(listener: ItemClickListener){
+        clickListener = listener
+    }
 
-        init {
-            itemView.setOnCreateContextMenuListener(this)
-        }
-
-        override fun onCreateContextMenu(
-            menu: ContextMenu,
-            view: View,
-            contextMenuInfo: ContextMenu.ContextMenuInfo
-        ) {
-            menu.setHeaderTitle((btnMore.tag as Array<*>)[0] as String)
-            val data = Intent()
-            data.putExtra(
-                GroupFragment.CONTEXT_MENU_KEY_INTENT_DATA_POS,
-                (btnMore.tag as Array<*>)[1] as Int
-            )
-            menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_EDIT, Menu.NONE, "Edit group")
-                .setIntent(data)
-            menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_DELETE, Menu.NONE, "Delete group")
-                .setIntent(data)
-            menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_LEAVE, Menu.NONE, "Leave group")
-                .setIntent(data)
-        }
+    fun setOnBtnMoreClickListener(listener: BtnMoreClickListener){
+        btnMoreClickListener = listener
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemGroupViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.rc_item_group, parent, false)
-        return ItemGroupViewHolder(view)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_group, parent, false)
+        return ItemGroupViewHolder(view,clickListener,btnMoreClickListener)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -64,8 +50,9 @@ class ListGroupAdapter(private val context: Context, private val listGroup: Arra
         Glide.with(holder.itemView).load(avata).into(holder.iconGroup)
         holder.txtGroupName.text = groupName
         holder.btnMore.setOnClickListener {
-            it.tag = arrayOf(groupName, position)
-            it.parent.showContextMenuForChild(it)
+            btnMoreClickListener.onBtnMoreClick(position,it)
+//            it.tag = arrayOf(groupName, position)
+//            it.parent.showContextMenuForChild(it)
         }
     }
 
