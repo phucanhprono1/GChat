@@ -39,5 +39,17 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:visibility="gone"
         android:id="@+id/imageMessageUser" />
+    <androidx.media3.ui.PlayerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/playerViewUser"
+        android:layout_below="@id/textContentUser"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_30sdp"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@id/imageUser"
+        android:visibility="gone"
+        android:layout_marginEnd="@dimen/_5sdp" />
+
 
 </RelativeLayout>

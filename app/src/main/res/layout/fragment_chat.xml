@@ -81,12 +81,48 @@
         >
 
     </androidx.recyclerview.widget.RecyclerView>
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnMoreAction"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/baseline_keyboard_arrow_right_24"
 
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+
+        />
+    <ImageButton
+        android:id="@+id/btnChooseImageMessage"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/btnMoreAction"
+
+        android:background="#00000000"
+
+        android:padding="10dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/baseline_image_24" />
+    <ImageButton
+        android:id="@+id/btnChooseVideoMessage"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/btnChooseImageMessage"
+
+        android:background="#00000000"
+
+        android:padding="10dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/baseline_video_library_24" />
     <EditText
         android:id="@+id/editWriteMessage"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
-        android:layout_alignParentStart="true"
+        android:layout_toEndOf="@+id/btnChooseVideoMessage"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="5dp"
         android:layout_marginTop="@dimen/_10sdp"
@@ -111,18 +147,7 @@
         android:padding="10dp"
         android:scaleType="centerInside"
         android:src="@drawable/ic_send" />
-    <ImageButton
-        android:id="@+id/btnChooseImageMessage"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_alignParentBottom="true"
 
-        android:layout_toLeftOf="@+id/btnSend"
-        android:background="#00000000"
-
-        android:padding="10dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/baseline_image_24" />
 
 
 </RelativeLayout>

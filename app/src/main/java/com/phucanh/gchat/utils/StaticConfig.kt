@@ -23,6 +23,7 @@ object StaticConfig {
     const val CAMERA_PERMISSION_REQUEST_CODE = 1000
     const val CAMERA_REQUEST_CODE = 999
     const val STORAGE_PERMISSION_REQUEST_CODE = 1001
+    const val VIDEO_REQUEST_CODE = 998
     const val INTENT_KEY_CHAT_FRIEND = "friendname"
     const val INTENT_KEY_CHAT_AVATA = "friendavata"
     const val INTENT_KEY_CHAT_ID = "friendid"

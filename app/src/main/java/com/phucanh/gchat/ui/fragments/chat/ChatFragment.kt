@@ -127,14 +127,34 @@ class ChatFragment : Fragment() {
 
             }
         }
+        binding.btnMoreAction.visibility = View.GONE
+        binding.btnChooseVideoMessage.visibility = View.VISIBLE
+        binding.btnChooseImageMessage.visibility = View.VISIBLE
+        binding.btnMoreAction.setOnClickListener {
+            binding.btnMoreAction.visibility = View.GONE
+            binding.btnChooseVideoMessage.visibility = View.VISIBLE
+            binding.btnChooseImageMessage.visibility = View.VISIBLE
+        }
+        binding.editWriteMessage.setOnClickListener {
+            binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
+            binding.btnMoreAction.visibility = View.VISIBLE
+            binding.btnChooseVideoMessage.visibility = View.GONE
+            binding.btnChooseImageMessage.visibility = View.GONE
+        }
         binding.btnSend.setOnClickListener {
             if(binding.editWriteMessage.text.toString().trim().isNotEmpty()){
                 viewModel.sendMessage(binding.editWriteMessage.text.toString().trim(), viewModel.roomId, 0,idFriend!!)
                 binding.editWriteMessage.setText("")
+                binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
             }
         }
         binding.btnChooseImageMessage.setOnClickListener{
+            binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
             showImagePickerDialog(requireContext())
+        }
+        binding.btnChooseVideoMessage.setOnClickListener{
+            binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
+            chooseVideo()
         }
 
         // TODO: Use the ViewModel
@@ -179,7 +199,6 @@ class ChatFragment : Fragment() {
             checkCameraPermission()
             takePicture()
         }
-
         galleryButton.setOnClickListener {
             // Xử lý chức năng chọn ảnh từ thư viện
             // Ví dụ: Gọi Intent để mở thư viện ảnh
@@ -191,6 +210,15 @@ class ChatFragment : Fragment() {
         }
 
         dialog.show()
+    }
+    fun chooseVideo() {
+        val intent = Intent()
+        intent.type = "video/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(
+            Intent.createChooser(intent, "Select Video"),
+            StaticConfig.VIDEO_REQUEST_CODE
+        )
     }
     private fun checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
@@ -285,6 +313,35 @@ class ChatFragment : Fragment() {
                 val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount
                 progressDialog.setMessage("Uploaded " + progress.toInt() + "%")
             })
+        }else if (requestCode == StaticConfig.VIDEO_REQUEST_CODE && resultCode == AppCompatActivity.RESULT_OK && data != null && data.data != null) {
+            viewModel.imgUri = data.data
+            try {
+
+                val progressDialog = ProgressDialog(requireContext())
+                progressDialog.setTitle("Uploading...")
+                progressDialog.show()
+                val fileName = "video_" + System.currentTimeMillis() + ".mp4"
+                val storageRef = storageReference.child("video/$fileName")
+
+                val uploadTask = storageRef.putFile(data.data!!)
+                uploadTask.addOnSuccessListener(OnSuccessListener<UploadTask.TaskSnapshot> { taskSnapshot ->
+                    progressDialog.dismiss()
+                    Toast.makeText(requireActivity(), "Uploaded", Toast.LENGTH_SHORT).show()
+                    storageRef.downloadUrl.addOnSuccessListener(OnSuccessListener { uri ->
+                        viewModel.imgUri = uri
+                        viewModel.imgUriLink = uri.toString()
+                        viewModel.sendMessage(viewModel.imgUriLink,viewModel.roomId,2,idFriend!!)
+                    })
+                }).addOnFailureListener(OnFailureListener {
+                    progressDialog.dismiss()
+                    Toast.makeText(requireActivity(), "Upload failed. Please try again later.", Toast.LENGTH_SHORT).show()
+                }).addOnProgressListener(OnProgressListener<UploadTask.TaskSnapshot> { taskSnapshot ->
+                    val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount
+                    progressDialog.setMessage("Uploaded " + progress.toInt() + "%")
+                })
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -100,7 +101,7 @@ class ViewProfileViewModel @Inject constructor(val userReference: DatabaseRefere
             jsonObject.put("to", fcmToken)
             // Tạo kết nối HTTP để gửi thông báo đẩy
             val client = OkHttpClient()
-            val JSON: MediaType = MediaType.get("application/json; charset=utf-8")
+            val JSON: MediaType = "application/json; charset=utf-8".toMediaType()
             Log.d(
                 "FCM",
                 "Preparing to send notification with token: $fcmToken $jsonObject"
@@ -122,14 +123,14 @@ class ViewProfileViewModel @Inject constructor(val userReference: DatabaseRefere
                 .build()
             // Thực hiện request để gửi thông báo đẩy
             client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call?, e: IOException?) {
-                    // Handle error
+                override fun onFailure(call: Call, e: IOException) {
+                    TODO("Not yet implemented")
                 }
 
-                @Throws(IOException::class)
-                override fun onResponse(call: Call?, response: Response) {
-                    Log.d("FCM", response.body()!!.string())
+                override fun onResponse(call: Call, response: Response) {
+                    TODO("Not yet implemented")
                 }
+
             }
             )
         } catch (e: Exception) {

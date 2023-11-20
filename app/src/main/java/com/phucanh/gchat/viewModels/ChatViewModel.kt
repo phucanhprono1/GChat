@@ -21,6 +21,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -100,7 +102,14 @@ class ChatViewModel @Inject constructor(val userReference: DatabaseReference,val
                 sendPushNotification(id.toString(),"Sent an image")
             }
         }
-
+        else if(type == 2){
+            for ( id in receiverId){
+                if(id.toString() == StaticConfig.UID){
+                    continue
+                }
+                sendPushNotification(id.toString(),"Sent a video clip")
+            }
+        }
     }
     fun sendPushNotification(receiverUserId: String, notificationMessage: String) {
         Log.d(
@@ -160,7 +169,8 @@ class ChatViewModel @Inject constructor(val userReference: DatabaseReference,val
             jsonObject.put("to", fcmToken)
             // Tạo kết nối HTTP để gửi thông báo đẩy
             val client = OkHttpClient()
-            val JSON: MediaType = MediaType.get("application/json; charset=utf-8")
+            //val JSON: MediaType = MediaType.get("application/json; charset=utf-8")
+            val JSON: MediaType = "application/json; charset=utf-8".toMediaType()
             Log.d(
                 "FCM",
                 "Preparing to send notification with token: $fcmToken $jsonObject"
@@ -182,13 +192,14 @@ class ChatViewModel @Inject constructor(val userReference: DatabaseReference,val
                 .build()
             // Thực hiện request để gửi thông báo đẩy
             client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call?, e: IOException?) {
-                    // Handle error
+
+
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.d("FCM", "onFailure: $e")
                 }
 
-                @Throws(IOException::class)
-                override fun onResponse(call: Call?, response: Response) {
-                    Log.d("FCM", response.body()!!.string())
+                override fun onResponse(call: Call, response: Response) {
+                    Log.d("FCM", "onResponse: $response")
                 }
             }
             )

@@ -37,10 +37,20 @@
 
         android:layout_toEndOf="@id/imageFriend"
         android:layout_below="@+id/nameFriend"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="@dimen/_5sdp"
         android:text="Adsf"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#000" />
+    <androidx.media3.ui.PlayerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/playerViewFriend"
+        android:layout_below="@id/nameFriend"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_toEndOf="@+id/imageFriend"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:visibility="gone"
+        android:layout_marginEnd="@dimen/_5sdp" />
     <ImageView
         android:layout_width="@dimen/_70sdp"
         android:layout_height="@dimen/_80sdp"
