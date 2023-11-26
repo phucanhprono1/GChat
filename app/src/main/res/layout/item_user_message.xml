@@ -32,24 +32,32 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/textContentUser"
         android:layout_toStartOf="@id/imageUser"
         android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_10sdp"
+
         android:visibility="gone"
         android:id="@+id/imageMessageUser" />
-    <androidx.media3.ui.PlayerView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/playerViewUser"
+        android:layout_height="@dimen/_400sdp"
+        android:id="@+id/containerVideoUser"
         android:layout_below="@id/textContentUser"
-        android:layout_marginTop="@dimen/_10sdp"
+
         android:layout_marginStart="@dimen/_30sdp"
-        android:layout_alignParentTop="true"
+
         android:layout_toStartOf="@id/imageUser"
         android:visibility="gone"
-        android:layout_marginEnd="@dimen/_5sdp" />
+        android:layout_marginEnd="@dimen/_5sdp"
+        >
+        <androidx.media3.ui.PlayerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/playerViewUser"
+            />
+    </FrameLayout>
+
 
 
 </RelativeLayout>

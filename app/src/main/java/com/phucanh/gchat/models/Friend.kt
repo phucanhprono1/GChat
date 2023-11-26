@@ -1,9 +1,8 @@
 package com.phucanh.gchat.models
 
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 
@@ -16,5 +15,9 @@ data class Friend(
 ){
     @PrimaryKey(autoGenerate = false)
     var id = user.id
-    constructor():this("",User())
+    @Ignore
+    constructor() : this(
+        "",
+        User()
+    )
 }

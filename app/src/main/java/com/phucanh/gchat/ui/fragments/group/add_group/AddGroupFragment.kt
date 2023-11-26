@@ -112,20 +112,20 @@ class AddGroupFragment : Fragment(), ListPeopleAdapter.FriendSelectionListener {
                     var bundle = Bundle()
                     bundle.putBoolean("isSuccess",true)
                     setFragmentResult("addGroupFragmentResult", bundle)
-
+                    viewModel.listIDChoose.clear()
+                    viewModel.listIDRemove.clear()
+                    viewModel.avatarGroup = null
+                    viewModel.avatarGroupUri = null
+                    viewModel.nameGroup = null
+                    viewModel.isEditGroup = false
+                    viewModel.group = null
                 }
                 else{
                     viewModel.nameGroup = binding.editGroupName.text.toString()
                     viewModel.createGroup()
 
                 }
-//                viewModel.listIDChoose.clear()
-//                viewModel.listIDRemove.clear()
-//                viewModel.avatarGroup = null
-//                viewModel.avatarGroupUri = null
-//                viewModel.nameGroup = null
-//                viewModel.isEditGroup = false
-//                viewModel.group = null
+
                 findNavController().popBackStack()
             }
             else{

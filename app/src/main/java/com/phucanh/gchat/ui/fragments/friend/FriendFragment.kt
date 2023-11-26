@@ -70,13 +70,13 @@ class FriendFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         val idFriend = arguments?.getString("idFriend")
         if(idFriend!= null) {
-            viewModel.mapMark[idFriend] = null
+            ListFriendAdapter.mapMark[idFriend] = null
         }
         setFragmentResultListener("chatFragmentResult") { _, result ->
             val idFriend = result.getString("idFriend")
-            if (viewModel.mapMark != null) {
+            if (ListFriendAdapter.mapMark != null) {
 
-                viewModel.mapMark[idFriend] = false
+                ListFriendAdapter.mapMark[idFriend] = false
             }
 
         }
@@ -109,6 +109,53 @@ class FriendFragment : Fragment() {
         }
         val filter = IntentFilter(DELETE_FRIEND)
         requireContext().registerReceiver(deleteFriendReceiver, filter)
+//        viewModel.listFriend.let {
+//            if(it==null)binding.swipeRefresh.isRefreshing = true
+//            else{
+//                binding.swipeRefresh.isRefreshing = false
+//                listFriendsAdapter = ListFriendAdapter(requireContext(),it, findNavController())
+//                listFriendsAdapter!!.notifyDataSetChanged()
+////                listFriendsAdapter!!.updateData(it)
+//                listFriendsAdapter!!.setOnClickListener(object : ListFriendAdapter.OnClickListener {
+//                    override fun onClick(position: Int) {
+//                        val friend = viewModel.listFriend.listFriend?.get(position)
+//                        val bundle = Bundle()
+//                        Log.d("FriendFragment", "onClick: ${friend?.id}")
+//                        var idFriend: ArrayList<CharSequence> = ArrayList()
+//                        idFriend.add(friend?.id!!)
+//                        bundle.putCharSequenceArrayList(StaticConfig.INTENT_KEY_CHAT_ID, idFriend)
+//                        bundle.putString(StaticConfig.INTENT_KEY_CHAT_FRIEND, friend?.user?.name)
+//                        bundle.putString(StaticConfig.INTENT_KEY_CHAT_ROOM_ID, friend?.idRoom)
+//                        bundle.putString(StaticConfig.INTENT_KEY_CHAT_AVATA, friend?.user?.avata)
+//                        chatViewModel.mapAvatar = HashMap()
+//                        if(!friend?.user?.avata.equals(StaticConfig.STR_DEFAULT_URI)) {
+//                            chatViewModel.mapAvatar[friend?.id!!] = friend?.user?.avata!!
+//                        }
+//                        else {
+//                            chatViewModel.mapAvatar[friend?.id!!] = StaticConfig.STR_DEFAULT_URI
+//                        }
+//                        findNavController().navigate(R.id.action_global_chatFragment, bundle)
+//                        viewModel.mapMark[friend?.id!!] = null
+//                    }
+//
+//                })
+//                listFriendsAdapter!!.setOnLongClickListener(object : ListFriendAdapter.OnLongClickListener {
+//                    override fun onLongClick(view: View): Boolean {
+//                        val position = binding.recycleListFriend.getChildAdapterPosition(view)
+//
+//                        val friend = viewModel.listFriend.listFriend?.get(position)
+//                        Log.d("FriendFragment", "onLongClick: ${friend?.id}")
+//                        showDialogConfirmDeleteFriend(friend?.id, ServiceUtils.isNetworkConnected(requireContext()))
+//                        return true
+//                    }
+//
+//                })
+//                Log.d("FriendFragment", "onActivityCreated: ${it.listFriend?.size}")
+//                binding.recycleListFriend.adapter = listFriendsAdapter
+//                binding.recycleListFriend.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+//
+//            }
+//        }
         viewModel._listFriend.observe(viewLifecycleOwner) {
             if(it==null)binding.swipeRefresh.isRefreshing = true
             else{
@@ -118,7 +165,7 @@ class FriendFragment : Fragment() {
 //                listFriendsAdapter!!.updateData(it)
                 listFriendsAdapter!!.setOnClickListener(object : ListFriendAdapter.OnClickListener {
                     override fun onClick(position: Int) {
-                        val friend = it.listFriend?.get(position)
+                        val friend = viewModel.listFriend.listFriend?.get(position)
                         val bundle = Bundle()
                         Log.d("FriendFragment", "onClick: ${friend?.id}")
                         var idFriend: ArrayList<CharSequence> = ArrayList()
@@ -143,7 +190,7 @@ class FriendFragment : Fragment() {
                     override fun onLongClick(view: View): Boolean {
                         val position = binding.recycleListFriend.getChildAdapterPosition(view)
 
-                        val friend = it.listFriend?.get(position)
+                        val friend = viewModel.listFriend.listFriend?.get(position)
                         Log.d("FriendFragment", "onLongClick: ${friend?.id}")
                         showDialogConfirmDeleteFriend(friend?.id, ServiceUtils.isNetworkConnected(requireContext()))
                         return true

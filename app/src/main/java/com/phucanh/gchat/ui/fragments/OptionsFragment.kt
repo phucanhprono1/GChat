@@ -55,7 +55,7 @@ class OptionsFragment : Fragment() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == SIGN_OUT) {
                 // Handle the sign out action here
-                FirebaseDatabase.getInstance(getString(R.string.firebase_database_url)).reference.child("users").child(mAuth.currentUser!!.uid).child("fcmToken").removeValue()
+                FirebaseDatabase.getInstance(getString(R.string.firebase_database_url)).reference.child("users").child(StaticConfig.UID).child("fcmToken").removeValue()
 
                 mAuth.signOut()
                 LoginManager.getInstance().logOut()

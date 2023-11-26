@@ -12,7 +12,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.values
 import com.phucanh.gchat.R
 import com.phucanh.gchat.databinding.ActivityAddInfoBinding
 import com.phucanh.gchat.models.User
@@ -26,7 +25,7 @@ class AddInfoActivity : AppCompatActivity() {
         binding= ActivityAddInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
         mAuth = FirebaseAuth.getInstance()
-        var user: User= User()
+        var user= User()
         val uid = mAuth.currentUser?.uid
         binding.etBirthdayAddInfo.setOnClickListener{
             val calendar: Calendar = Calendar.getInstance()

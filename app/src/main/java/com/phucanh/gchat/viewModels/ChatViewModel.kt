@@ -4,9 +4,8 @@ import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -18,11 +17,12 @@ import com.phucanh.gchat.models.Message
 import com.phucanh.gchat.models.User
 import com.phucanh.gchat.utils.StaticConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -43,41 +43,44 @@ class ChatViewModel @Inject constructor(val userReference: DatabaseReference,val
     var roomName: String = ""
 
     fun getListMessage(idRoom: String) {
-        val conversation = listMessage.value ?: Conversation()
 
-        val childEventListener = object : ChildEventListener {
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                val message = snapshot.getValue(Message::class.java)
-                if (message != null && !conversation.listMessageData.contains(message)) {
-                    conversation.listMessageData.add(message)
-                    listMessage.value = conversation
+            val conversation = listMessage.value ?: Conversation()
+
+            val childEventListener = object : ChildEventListener {
+                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                    val message = snapshot.getValue(Message::class.java)
+                    if (message != null && !conversation.listMessageData.contains(message)) {
+                        conversation.listMessageData.add(message)
+                        listMessage.value = conversation
+                    }
+                }
+
+                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                    // Handle message change if needed
+                }
+
+                override fun onChildRemoved(snapshot: DataSnapshot) {
+                    // Handle message removal if needed
+                }
+
+                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                    // Handle message movement if needed
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error
                 }
             }
 
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                // Handle message change if needed
-            }
+            // Remove the existing child event listener before adding a new one
+            firebaseDatabase.reference.child("message").child(idRoom).removeEventListener(childEventListener)
 
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                // Handle message removal if needed
-            }
+            // Add the new child event listener
+            firebaseDatabase.reference.child("message").child(idRoom).addChildEventListener(childEventListener)
 
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                // Handle message movement if needed
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                // Handle error
-            }
-        }
-
-        // Remove the existing child event listener before adding a new one
-        firebaseDatabase.reference.child("message").child(idRoom).removeEventListener(childEventListener)
-
-        // Add the new child event listener
-        firebaseDatabase.reference.child("message").child(idRoom).addChildEventListener(childEventListener)
     }
-    fun sendMessage(content: String, idRoom: String, type: Int, receiverId: ArrayList<CharSequence>){
+    fun sendMessage(content: String, idRoom: String, type: Int, receiverId: ArrayList<CharSequence>,fileName:String?){
         val message: Message = Message()
         message.content = content
         message.idSender =  StaticConfig.UID

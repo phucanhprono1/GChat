@@ -16,7 +16,7 @@ import com.google.firebase.database.ValueEventListener
 import com.phucanh.gchat.models.Friend
 import com.phucanh.gchat.models.ListFriend
 import com.phucanh.gchat.room.FriendDao
-import com.phucanh.gchat.ui.fragments.friend.FriendFragment
+import com.phucanh.gchat.ui.fragments.friend.ListFriendAdapter
 import com.phucanh.gchat.utils.ServiceUtils
 import com.phucanh.gchat.utils.StaticConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +29,7 @@ class FriendViewModel @Inject constructor(
     private val friendDao: FriendDao,
     application: Application
 ) : AndroidViewModel(application) {
-    val _listFriend: MutableLiveData<ListFriend?> = MutableLiveData()
+    var _listFriend: MutableLiveData<ListFriend?> = MutableLiveData()
     var listFriend: ListFriend= ListFriend()
     var mapQuery = HashMap<String?, Query?>()
     var mapQueryOnline = HashMap<String?, DatabaseReference?>()
@@ -45,8 +45,8 @@ class FriendViewModel @Inject constructor(
 
     var detectFriendOnline :CountDownTimer
     init {
-        _listFriend.value = listFriend
-        getListFriendUId()
+//        _listFriend.value = listFriend
+//        getListFriendUId()
         detectFriendOnline = object : CountDownTimer(StaticConfig.TIME_TO_REFRESH, StaticConfig.TIME_TO_REFRESH) {
             override fun onTick(millisUntilFinished: Long) {
                 // TODO Auto-generated method stub
@@ -60,42 +60,49 @@ class FriendViewModel @Inject constructor(
         }
     }
 
-    fun updateMessageAndStatus(listFriend: ListFriend) {
-        for(position in 0..listFriend.listFriend!!.size-1){
-            var id = listFriend.listFriend!![position]!!.user.id
-            var idRoom = listFriend.listFriend!![position]!!.idRoom
-            if (mapQuery[id] == null && mapChildListener[id] == null) {
-                Log.d("FriendsAdapter", "Message Content: ${listFriend.listFriend!![position]!!.user.message?.content}")
-                Log.d("FriendsAdapter", "Message Timestamp: ${listFriend.listFriend!![position]!!.user.message?.timestamp}")
+    fun updateMessageAndStatus(listFriend1: ListFriend):ListFriend {
+        var listFriend = listFriend1
+        for(position in 0 until listFriend.listFriend!!.size){
+            var id = listFriend.listFriend!![position]?.id
+            var idRoom = listFriend.listFriend!![position]?.idRoom!!
+            Log.d("FriendViewModel", "idRoom: $idRoom")
+            Log.d("FriendViewModel", "id: $id")
+            Log.d("null", "null")
+            if (mapQuery[id] == null && ListFriendAdapter.mapChildListener[id] == null) {
+//                    Log.d("FriendsAdapter", "Message Content: ${listFriend.listFriend!![position]!!.user.message?.content}")
+//                    Log.d("FriendsAdapter", "Message Timestamp: ${listFriend.listFriend!![position]!!.user.message?.timestamp}")
                 mapQuery[id] =
                     FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                        .getReference("message")
+                        .reference.child("message")
                         .child(idRoom)
                         .limitToLast(1)
 
-                val childEventListener = object : ChildEventListener {
+                var childEventListener = object : ChildEventListener {
                     override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                         val mapMessage = dataSnapshot.value as HashMap<*, *>?
+                        Log.d("ListFriendAdapter","${mapMessage?.get("content")}")
+                        Log.d("ListFriendAdapter","$id map mark: ${mapMark[id]}")
+//                            listFriendItem.user.message?.content = "$id${mapMessage!!["content"]}"
                         if (mapMark[id] != null) {
+
                             if (!mapMark[id]!!) {
                                 mapMark[id] = true
 
                                 // Update message content
-                                listFriend.listFriend!![position]!!.user.message?.content =
-                                    "$id${mapMessage!!["content"]}"
-                                Log.d("FriendsAdapter", "Message Content: ${listFriend.listFriend!![position]!!.user.message?.content}")
+                                listFriend.listFriend?.get(position)!!!!.user.message?.content = "$id${mapMessage?.get("content")}"
+                                Log.d("ListFriendsAdapter", "Message Content: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
 
                                 // Notify the adapter on the UI thread
 
                             } else {
-                                listFriend.listFriend!![position]!!.user.message?.content =
-                                    mapMessage!!["content"] as String
+                                listFriend.listFriend?.get(position)!!.user.message?.content = mapMessage?.get("content") as String
+                                Log.d("ListFriendsAdapter", "Message Content 1: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
                             }
                         } else {
-                            listFriend.listFriend!![position]!!.user.message?.content =
-                                mapMessage!!["content"] as String
+                            listFriend.listFriend?.get(position)!!!!.user.message?.content = mapMessage?.get("content") as String
+                            Log.d("ListFriendsAdapter", "Message Content 2: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
                         }
-                        listFriend.listFriend!![position]!!.user.message?.timestamp = mapMessage["timestamp"] as Long
+                        listFriend.listFriend?.get(position)!!.user.message?.timestamp = mapMessage?.get("timestamp") as Long
                     }
 
 
@@ -116,18 +123,20 @@ class FriendViewModel @Inject constructor(
                 mapMark[id] = true
             }
             if (mapQueryOnline[id] == null && mapChildListenerOnline[id] == null) {
-                mapQueryOnline[id] = FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                    .getReference("users")
-                    .child(id)
-                    .child("status")
+                mapQueryOnline[id] = id?.let {
+                    firebaseDatabase
+                        .getReference("users")
+                        .child(it)
+                        .child("status")
+                }
 
                 mapChildListenerOnline[id] = object : ChildEventListener {
                     override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                         if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
 
-                            if (listFriend.listFriend!![position]!!.user != null && listFriend.listFriend!![position]!!.user.status == null) {
-                                listFriend.listFriend!![position]!!.user.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
-                                Log.d("FriendsAdapter", "Is Online: ${listFriend.listFriend!![position]!!.user.status?.isOnline}")
+                            if (listFriend.listFriend?.get(position)!!.user != null && listFriend.listFriend?.get(position)!!.user.status == null) {
+                                listFriend.listFriend!![position]?.user?.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
+                                Log.d("FriendViewModel", "Is Online: ${listFriend.listFriend!![position]?.user?.status?.isOnline}")
 
 
                             }
@@ -139,8 +148,8 @@ class FriendViewModel @Inject constructor(
                         if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
 
 
-                            if (listFriend.listFriend!![position]!!.user != null && listFriend.listFriend!![position]!!.user.status != null) {
-                                listFriend.listFriend!![position]!!.user.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
+                            if (listFriend.listFriend!![position]?.user != null && listFriend.listFriend!![position]?.user?.status != null) {
+                                listFriend.listFriend!![position]?.user?.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
 
 
                             }
@@ -156,7 +165,7 @@ class FriendViewModel @Inject constructor(
                 mapChildListenerOnline[id]?.let { mapQueryOnline[id]?.addChildEventListener(it) }
             }
         }
-
+        return listFriend
 
 
     }
@@ -166,7 +175,6 @@ class FriendViewModel @Inject constructor(
         detectFriendOnline.cancel()
         listFriendID.clear()
         index = 0
-//        _listFriend.value = null
         getListFriendUId()
     }
 
@@ -193,10 +201,14 @@ class FriendViewModel @Inject constructor(
     fun getAllFriendInfo(index: Int) {
 
             if (index == listFriendID.size) {
-                listFriend!!.listFriend = friendDao.getAll() as ArrayList<Friend?>
-                updateMessageAndStatus(listFriend)
-                _listFriend.value = listFriend
-                detectFriendOnline.start()
+
+                friendDao.getAll().let {
+                    listFriend.listFriend = it as ArrayList<Friend?>
+
+ //                   listFriend = updateMessageAndStatus(listFriend)
+                    _listFriend.postValue(listFriend)
+                    detectFriendOnline.start()
+                }
             } else {
                 val id = listFriendID[index]
                 userRef.child(id).addListenerForSingleValueEvent(object : ValueEventListener {

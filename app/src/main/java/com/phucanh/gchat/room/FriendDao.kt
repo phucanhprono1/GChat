@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.phucanh.gchat.models.Friend
 import com.phucanh.gchat.models.ListFriend
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao

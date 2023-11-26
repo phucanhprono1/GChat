@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -42,7 +43,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import javax.inject.Inject
-@AndroidEntryPoint
+@UnstableApi @AndroidEntryPoint
 class ChatFragment : Fragment() {
 
     companion object {
@@ -143,7 +144,7 @@ class ChatFragment : Fragment() {
         }
         binding.btnSend.setOnClickListener {
             if(binding.editWriteMessage.text.toString().trim().isNotEmpty()){
-                viewModel.sendMessage(binding.editWriteMessage.text.toString().trim(), viewModel.roomId, 0,idFriend!!)
+                viewModel.sendMessage(binding.editWriteMessage.text.toString().trim(), viewModel.roomId, 0,idFriend!!,null)
                 binding.editWriteMessage.setText("")
                 binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
             }
@@ -188,7 +189,6 @@ class ChatFragment : Fragment() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
         dialog.setContentView(R.layout.dialog_image_picker)
-        1
         val captureButton = dialog.findViewById<ImageButton>(R.id.imgCamera)
         val galleryButton = dialog.findViewById<ImageButton>(R.id.imgGallery)
         val cancelButton = dialog.findViewById<ImageButton>(R.id.imgCancel)
@@ -271,7 +271,7 @@ class ChatFragment : Fragment() {
                     storageRef.downloadUrl.addOnSuccessListener(OnSuccessListener { uri ->
                         viewModel.imgUri = uri
                         viewModel.imgUriLink = uri.toString()
-                        viewModel.sendMessage(viewModel.imgUriLink,viewModel.roomId,1,idFriend!!)
+                        viewModel.sendMessage(viewModel.imgUriLink,viewModel.roomId,1,idFriend!!,fileName)
                     })
                 }).addOnFailureListener(OnFailureListener {
                     progressDialog.dismiss()
@@ -304,7 +304,7 @@ class ChatFragment : Fragment() {
                 storageRef.downloadUrl.addOnSuccessListener(OnSuccessListener { uri ->
                     viewModel.imgUri = uri
                     viewModel.imgUriLink = uri.toString()
-                    viewModel.sendMessage(viewModel.imgUriLink,viewModel.roomId,1,idFriend!!)
+                    viewModel.sendMessage(viewModel.imgUriLink,viewModel.roomId,1,idFriend!!,fileName)
                 })
             }).addOnFailureListener(OnFailureListener {
                 progressDialog.dismiss()
@@ -330,7 +330,7 @@ class ChatFragment : Fragment() {
                     storageRef.downloadUrl.addOnSuccessListener(OnSuccessListener { uri ->
                         viewModel.imgUri = uri
                         viewModel.imgUriLink = uri.toString()
-                        viewModel.sendMessage(viewModel.imgUriLink,viewModel.roomId,2,idFriend!!)
+                        viewModel.sendMessage(viewModel.imgUriLink,viewModel.roomId,2,idFriend!!,fileName)
                     })
                 }).addOnFailureListener(OnFailureListener {
                     progressDialog.dismiss()

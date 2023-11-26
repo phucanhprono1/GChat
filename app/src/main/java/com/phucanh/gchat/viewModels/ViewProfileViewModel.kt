@@ -60,7 +60,7 @@ class ViewProfileViewModel @Inject constructor(val userReference: DatabaseRefere
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     val receiverUser = dataSnapshot.getValue(User::class.java)
-                    val fcmToken: String = receiverUser?.fcmToken!!
+                    val fcmToken: String? = receiverUser?.fcmToken
 
                     // Gửi thông báo đẩy bằng FCM
                     if (fcmToken != null && !fcmToken.isEmpty()) {
@@ -128,7 +128,7 @@ class ViewProfileViewModel @Inject constructor(val userReference: DatabaseRefere
                 }
 
                 override fun onResponse(call: Call, response: Response) {
-                    TODO("Not yet implemented")
+                    Log.d("FCM", "onResponse: $response")
                 }
 
             }

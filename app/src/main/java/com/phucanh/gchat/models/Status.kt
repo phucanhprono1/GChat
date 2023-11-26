@@ -1,12 +1,8 @@
 package com.phucanh.gchat.models
 
-class Status {
+data class Status (
 
-    var isOnline: Boolean? = null
-    var timestamp: Long? = null
+    var isOnline: Boolean = false,
+    var timestamp: Long? = 0
 
-    constructor() {
-        isOnline = null
-        timestamp = 0
-    }
-}
+)

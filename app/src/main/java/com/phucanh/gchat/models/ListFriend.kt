@@ -1,10 +1,12 @@
 package com.phucanh.gchat.models
 
+import androidx.lifecycle.LiveData
+
 class ListFriend {
-    var listFriend: ArrayList<Friend?>? = null
+    var listFriend: ArrayList<Friend?> = ArrayList()
+    var liveListFriend: LiveData<List<Friend>>? = null
 
-
-    fun ListFriend() {
+    constructor() {
         listFriend = ArrayList()
     }
 
