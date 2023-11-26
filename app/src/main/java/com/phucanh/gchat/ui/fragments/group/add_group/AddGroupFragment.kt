@@ -54,6 +54,8 @@ class AddGroupFragment : Fragment(), ListPeopleAdapter.FriendSelectionListener {
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if(arguments?.getString("groupId")!=null){
+                viewModel.listIDChoose.clear()
+                viewModel.listIDRemove.clear()
                 viewModel.isEditGroup = false
                 viewModel.idGroup = null
                 viewModel.avatarGroup = null
@@ -109,24 +111,14 @@ class AddGroupFragment : Fragment(), ListPeopleAdapter.FriendSelectionListener {
                 if(viewModel.isEditGroup){
                     viewModel.nameGroup = binding.editGroupName.text.toString()
                     viewModel.editGroup()
-
-
                 }
                 else{
                     viewModel.nameGroup = binding.editGroupName.text.toString()
                     viewModel.createGroup()
-
                 }
                 var bundle = Bundle()
                 bundle.putString("groupEdited","edited")
                 setFragmentResult("addGroupFragmentResult", bundle)
-                viewModel.listIDChoose.clear()
-                viewModel.listIDRemove.clear()
-                viewModel.avatarGroup = null
-                viewModel.avatarGroupUri = null
-                viewModel.nameGroup = null
-                viewModel.isEditGroup = false
-                viewModel.group = null
                 findNavController().popBackStack()
             }
             else{

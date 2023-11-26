@@ -65,6 +65,7 @@ class OptionsFragment : Fragment() {
                     activity?.finish()
                     StaticConfig.LIST_FRIEND_ID.clear()
                     viewModel.deleteAllFriend()
+                    viewModel.deleteAllGroup()
                 }
             }
         }

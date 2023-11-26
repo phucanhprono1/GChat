@@ -27,6 +27,7 @@ import com.phucanh.gchat.databinding.FragmentGroupBinding
 import com.phucanh.gchat.models.Group
 import com.phucanh.gchat.models.User
 import com.phucanh.gchat.utils.StaticConfig
+import com.phucanh.gchat.viewModels.AddGroupViewModel
 import com.phucanh.gchat.viewModels.ChatViewModel
 import com.phucanh.gchat.viewModels.GroupViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +44,7 @@ class GroupFragment : Fragment() {
     @Inject
     lateinit var firebaseDatabase: FirebaseDatabase
     private val viewModel by activityViewModels<GroupViewModel>()
+    private val addGroupViewModel by activityViewModels<AddGroupViewModel>()
     private val chatViewModel by activityViewModels<ChatViewModel>()
     private lateinit var binding : FragmentGroupBinding
 
@@ -69,6 +71,8 @@ class GroupFragment : Fragment() {
             binding.swipeRefresh.isRefreshing = viewModel.listGroup.size==0
         }
         binding.addGroup.setOnClickListener {
+            addGroupViewModel.listIDChoose.clear()
+            addGroupViewModel.listIDRemove.clear()
             findNavController().navigate(R.id.action_groupFragment_to_addGroupFragment)
         }
         if(viewModel.listGroup.size==0){
@@ -84,12 +88,20 @@ class GroupFragment : Fragment() {
                 setFragmentResultListener("addGroupFragmentResult"){_,bundle->
                     if(bundle.getString("groupEdited")=="edited"){
                         Log.d("GroupFragment", "onCreat: " + bundle.getString("groupEdited"))
+//                        addGroupViewModel.listIDChoose.clear()
+//                        addGroupViewModel.listIDRemove.clear()
+                        addGroupViewModel.avatarGroup = null
+                        addGroupViewModel.avatarGroupUri = null
+                        addGroupViewModel.nameGroup = null
+                        addGroupViewModel.isEditGroup = false
+                        addGroupViewModel.group = null
                         viewModel.refreshListGroup()
                         adapter!!.notifyDataSetChanged()
+
                     }
                 }
                 binding.swipeRefresh.isRefreshing = false
-                viewModel.listGroup = it
+//                viewModel.listGroup = it
                // registerForContextMenu(binding.recycleListGroup)
                 adapter = ListGroupAdapter(requireContext(),it)
                 adapter!!.notifyDataSetChanged()
@@ -143,6 +155,13 @@ class GroupFragment : Fragment() {
                                         bundle.putString("groupAvatar", viewModel.listGroup[position].avatar)
                                         bundle.putStringArrayList("groupMembers", viewModel.listGroup[position].members)
                                         findNavController().navigate(R.id.action_groupFragment_to_addGroupFragment, bundle)
+                                        addGroupViewModel.listIDChoose.clear()
+                                        addGroupViewModel.listIDRemove.clear()
+                                        addGroupViewModel.avatarGroup = null
+                                        addGroupViewModel.avatarGroupUri = null
+                                        addGroupViewModel.nameGroup = null
+                                        addGroupViewModel.isEditGroup = false
+                                        addGroupViewModel.group = null
                                     } else {
                                         Toast.makeText(requireActivity(), "You are not admin", Toast.LENGTH_LONG).show()
                                     }
