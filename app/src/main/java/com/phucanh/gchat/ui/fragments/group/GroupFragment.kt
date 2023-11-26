@@ -38,11 +38,7 @@ class GroupFragment : Fragment() {
 
     companion object {
         fun newInstance() = GroupFragment()
-        const val CONTEXT_MENU_DELETE = 1
-        const val CONTEXT_MENU_EDIT = 2
-        const val CONTEXT_MENU_LEAVE = 3
-        const val REQUEST_EDIT_GROUP = 0
-        const val CONTEXT_MENU_KEY_INTENT_DATA_POS = "pos"
+
     }
     @Inject
     lateinit var firebaseDatabase: FirebaseDatabase
@@ -86,8 +82,8 @@ class GroupFragment : Fragment() {
             }
             else{
                 setFragmentResultListener("addGroupFragmentResult"){_,bundle->
-                    if(!bundle.getBoolean("isSuccess")){
-                        Log.d("GroupFragment", "onCreat: " + bundle.getBoolean("isSuccess "))
+                    if(bundle.getString("groupEdited")=="edited"){
+                        Log.d("GroupFragment", "onCreat: " + bundle.getString("groupEdited"))
                         viewModel.refreshListGroup()
                         adapter!!.notifyDataSetChanged()
                     }
