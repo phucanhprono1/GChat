@@ -11,6 +11,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.phucanh.gchat.models.Group
 import com.phucanh.gchat.models.GroupMember
 import com.phucanh.gchat.room.FriendDao
@@ -20,8 +22,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 @HiltViewModel
 
-class GroupViewModel @Inject constructor(val firebaseDatabase: FirebaseDatabase,val userRef: DatabaseReference,friendDao: FriendDao,val groupDao: GroupDao,application: Application): AndroidViewModel(application) {
+class GroupViewModel @Inject constructor(val firebaseDatabase: FirebaseDatabase, val firebaseStorage: StorageReference,val userRef: DatabaseReference,friendDao: FriendDao,val groupDao: GroupDao,application: Application): AndroidViewModel(application) {
     // TODO: Implement the ViewModel
+
     val _listGroup :MutableLiveData<ArrayList<Group>?> = MutableLiveData()
     var listGroup = ArrayList<Group>()
     val groupRef = firebaseDatabase.getReference("group")
@@ -61,13 +64,20 @@ class GroupViewModel @Inject constructor(val firebaseDatabase: FirebaseDatabase,
     }
     fun deleteGroup(group: Group, index: Int) {
         if (index == group.members.size) {
+
             firebaseDatabase.reference
                 .child("group/${group.id}")
                 .removeValue()
                 .addOnCompleteListener { task ->
                     groupDao.deleteGroup(group.id)
                     listGroup.remove(group)
-                    _listGroup.value = listGroup
+                    firebaseDatabase.reference.child("message").child(group.id).removeValue()
+                    group.avatar?.let { FirebaseStorage.getInstance().getReferenceFromUrl(it).delete().addOnCompleteListener {
+                        _listGroup.value = listGroup
+                        Log.d("GroupViewModel", "deleteGroup: ")
+                    } }
+                   // _listGroup.value = listGroup
+
                     Toast.makeText(getApplication(), "Deleted group", Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener { e -> }
@@ -105,7 +115,7 @@ class GroupViewModel @Inject constructor(val firebaseDatabase: FirebaseDatabase,
                     groupReference.child(memberIndex).removeValue()
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                // waitingLeavingGroup.dismiss()
+
 
                                 listGroup.remove(group)
                                 groupDao.deleteGroup(group.id)

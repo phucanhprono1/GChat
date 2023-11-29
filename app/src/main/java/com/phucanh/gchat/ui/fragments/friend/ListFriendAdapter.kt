@@ -114,106 +114,102 @@ class ListFriendAdapter(
                 holder.txtMessage.visibility = View.GONE
                 holder.txtTime.visibility = View.GONE
                 Log.d("null", "null")
-                if (mapQuery[id] == null && mapChildListener[id] == null) {
-
-                    mapQuery[id] =
-                        FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                            .reference.child("message")
-                            .child(idRoom)
-                            .limitToLast(1)
-                    Log.d("ListFriendAdapter","$id map mark: ${mapMark[id]}")
-                    var childEventListener = object : ChildEventListener {
-                        override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                            val mapMessage = dataSnapshot.value as HashMap<*, *>?
-                            Log.d("ListFriendAdapter","${mapMessage?.get("content")}")
-
-//                            listFriendItem.user.message?.content = "$id${mapMessage!!["content"]}"
-                            if (mapMark[id] != null) {
-
-                                if (!mapMark[id]!!) {
-                                    mapMark[id] = true
-
-                                    // Update message content
-                                    listFriend.listFriend?.get(position)!!.user.message?.content = "$id${mapMessage?.get("content")}"
-                                    Log.d("ListFriendsAdapter", "Message Content: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
-
-                                    // Notify the adapter on the UI thread
-                                    notifyDataSetChanged()
-                                } else {
-                                    listFriend.listFriend?.get(position)!!.user.message?.content = mapMessage?.get("content") as String
-                                    Log.d("ListFriendsAdapter", "Message Content 1: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
-                                }
-                            } else {
-                                listFriend.listFriend?.get(position)!!!!.user.message?.content = mapMessage?.get("content") as String
-                                Log.d("ListFriendsAdapter", "Message Content 2: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
-                            }
-                            listFriend.listFriend?.get(position)!!.user.message?.timestamp = mapMessage?.get("timestamp") as Long
-                        }
-
-
-                        override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-                        override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
-                        override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-                        override fun onCancelled(databaseError: DatabaseError) {}
-                    }
-                    mapChildListener[id] = childEventListener
-//                    mapQuery[id]?.addChildEventListener(childEventListener)
-                    mapChildListener[id]?.let { mapQuery[id]?.addChildEventListener(it) }
-                    Log.d("FriendsAdapter", "mapQuery[$id]: ${mapQuery[id]}")
-                    mapMark[id] = true
-                }
-                else {
-                    mapChildListener[id]?.let { mapQuery[id]?.removeEventListener(it) }
-                    mapChildListener[id]?.let { mapQuery[id]?.addChildEventListener(it) }
-                    mapMark[id] = true
-                }
+//                if (mapQuery[id] == null && mapChildListener[id] == null) {
+//
+//                    mapQuery[id] =
+//                        FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
+//                            .reference.child("message")
+//                            .child(idRoom)
+//                            .limitToLast(1)
+//                    Log.d("ListFriendAdapter","$id map mark: ${mapMark[id]}")
+//                    var childEventListener = object : ChildEventListener {
+//                        override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+//                            val mapMessage = dataSnapshot.value as HashMap<*, *>?
+//                            Log.d("ListFriendAdapter","${mapMessage?.get("content")}")
+//
+////                            listFriendItem.user.message?.content = "$id${mapMessage!!["content"]}"
+//                            if (mapMark[id] != null) {
+//
+//                                if (!mapMark[id]!!) {
+//
+//                                    // Update message content
+//                                    listFriend.listFriend?.get(position)!!.user.message?.content = "$id${mapMessage?.get("content")}"
+//                                    Log.d("ListFriendsAdapter", "Message Content: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
+//
+//                                    // Notify the adapter on the UI thread
+//                                    notifyDataSetChanged()
+//                                } else {
+//                                    listFriend.listFriend?.get(position)!!.user.message?.content = mapMessage?.get("content") as String
+//                                    Log.d("ListFriendsAdapter", "Message Content 1: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
+//                                }
+//                            } else {
+//                                listFriend.listFriend?.get(position)!!!!.user.message?.content = mapMessage?.get("content") as String
+//                                Log.d("ListFriendsAdapter", "Message Content 2: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
+//                            }
+//                            listFriend.listFriend?.get(position)!!.user.message?.timestamp = mapMessage?.get("timestamp") as Long
+//                        }
+//
+//
+//                        override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
+//                        override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
+//                        override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
+//                        override fun onCancelled(databaseError: DatabaseError) {}
+//                    }
+//                    mapChildListener[id] = childEventListener
+////                    mapQuery[id]?.addChildEventListener(childEventListener)
+//                    mapChildListener[id]?.let { mapQuery[id]?.addChildEventListener(it) }
+//                    Log.d("FriendsAdapter", "mapQuery[$id]: ${mapQuery[id]}")
+//                    mapMark[id] = true
+//                }
+//                else {
+//                    mapChildListener[id]?.let { mapQuery[id]?.removeEventListener(it) }
+//                    mapChildListener[id]?.let { mapQuery[id]?.addChildEventListener(it) }
+//                    mapMark[id] = true
+//                }
 
             }
 
-            Glide.with(holder.itemView).load(Uri.parse(avata))
+            Glide.with(holder.itemView).load(Uri.parse(avata)).override(300, 300)
                 .into(holder.avata)
 
 
-            if (mapQueryOnline[id] == null && mapChildListenerOnline[id] == null && connected) {
-                mapQueryOnline[id] = FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                    .getReference("users")
-                    .child(id)
-                    .child("status")
-
-                mapChildListenerOnline[id] = object : ChildEventListener {
-                    override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                        if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
-
-                            if (listFriend.listFriend?.get(position)!!.user != null && listFriend.listFriend?.get(position)!!.user.status == null) {
-                                listFriend.listFriend?.get(position)!!.user.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
-                                Log.d("FriendsAdapter", "Is Online: ${listFriend.listFriend!![position]!!.user.status?.isOnline}")
-
-                                notifyDataSetChanged()
-                            }
-
-                        }
-                    }
-
-                    override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
-                        if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
-
-
-                            if (listFriend.listFriend?.get(position)!!.user != null && listFriend.listFriend?.get(position)!!.user.status != null) {
-                                listFriend.listFriend?.get(position)!!.user.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
-
-                                notifyDataSetChanged()
-                            }
-                        }
-                    }
-
-                    override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
-
-                    override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-
-                    override fun onCancelled(databaseError: DatabaseError) {}
-                }
-                mapChildListenerOnline[id]?.let { mapQueryOnline[id]?.addChildEventListener(it) }
-            }
+//            if (mapQueryOnline[id] == null && mapChildListenerOnline[id] == null && connected) {
+//                mapQueryOnline[id] = FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
+//                    .getReference("users")
+//                    .child(id)
+//                    .child("status")
+//
+//                mapChildListenerOnline[id] = object : ChildEventListener {
+//                    override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+//                        if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
+//
+//                            if (listFriend.listFriend?.get(position)!!.user != null && listFriend.listFriend?.get(position)!!.user.status == null) {
+//                                listFriend.listFriend?.get(position)!!.user.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
+//                                Log.d("FriendsAdapter", "Is Online: ${listFriend.listFriend!![position]!!.user.status?.isOnline}")
+//
+//                                notifyDataSetChanged()
+//                            }
+//
+//                        }
+//                    }
+//
+//                    override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
+//                        if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
+//                            if (listFriend.listFriend?.get(position)!!.user.status?.isOnline!=null) {
+//                                listFriend.listFriend?.get(position)!!.user.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
+//                                notifyDataSetChanged()
+//                            }
+//                        }
+//                    }
+//
+//                    override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
+//
+//                    override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
+//
+//                    override fun onCancelled(databaseError: DatabaseError) {}
+//                }
+//                mapChildListenerOnline[id]?.let { mapQueryOnline[id]?.addChildEventListener(it) }
+//            }
 
             if (listFriend.listFriend?.get(position)!!.user.status?.isOnline == true) {
                 holder.avata.borderWidth = 10

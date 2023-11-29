@@ -25,7 +25,7 @@ class ListPeopleAdapter(
     private val btnAddGroup: LinearLayout,
     private var listIDChoose: MutableSet<String>,
     private var listIDRemove: MutableSet<String>,
-    private var isEdit: Boolean,
+    private var isEdit: Boolean?,
     private var editGroup: Group?,
     private val friendSelectionListener: FriendSelectionListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -91,9 +91,9 @@ class ListPeopleAdapter(
             )
         }
 
-        if (isEdit && editGroup?.members?.contains(id) == true) {
+        if (isEdit ==true && editGroup?.members?.contains(id) == true) {
             friendHolder.checkBox.isChecked = true
-        } else if (editGroup != null && !editGroup!!.members!!.contains(id)) {
+        } else if (isEdit ==false && editGroup != null && !editGroup!!.members!!.contains(id)) {
             friendHolder.checkBox.isChecked = false
         }
     }

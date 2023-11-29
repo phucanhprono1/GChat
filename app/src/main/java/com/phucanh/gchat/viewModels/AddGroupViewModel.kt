@@ -29,30 +29,36 @@ class AddGroupViewModel @Inject constructor(
     ,private val groupDao: GroupDao,
     application: Application)
     : AndroidViewModel(application) {
+    var doneCreate:Boolean ?= null
+    var doneEdit:Boolean ?= null
+    var isCreate=false
     var listIDChoose = HashSet<String>()
     var listIDRemove = HashSet<String>()
-    var listFriend : ListFriend = ListFriend()
-    var isEditGroup = false
+    var listFriend: ListFriend = ListFriend()
+    var isEditGroup:Boolean? = null
     var group: Group? = null
     var avatarGroup: String? = null
     var nameGroup: String? = null
     var idGroup: String? = null
     var avatarGroupUri: Uri? = null
     val _listFriend: MutableLiveData<ListFriend?> = MutableLiveData()
-    val mAuth:FirebaseAuth = FirebaseAuth.getInstance()
+    val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+
     init {
         _listFriend.value = listFriend
         getListFriend()
     }
-    fun getListFriend(){
+
+    fun getListFriend() {
         listFriend!!.listFriend = friendDao.getAll() as ArrayList<Friend?>
         _listFriend.value = listFriend
     }
-    fun createGroup(){
+
+    fun createGroup() {
 
         val idGroupCreate = (StaticConfig.UID + System.currentTimeMillis()).hashCode().toString()
         val groupCreate = Group()
-        for(id in listIDChoose){
+        for (id in listIDChoose) {
             groupCreate.members.add(id)
         }
         groupCreate.id = idGroupCreate
@@ -60,9 +66,11 @@ class AddGroupViewModel @Inject constructor(
         groupCreate.name = nameGroup
         groupCreate.avatar = avatarGroup
 
-        firebaseDatabase.reference.child("group").child(idGroupCreate).setValue(groupCreate).addOnCompleteListener {
-            addRoomForUser(idGroupCreate, 0)
-        }
+        firebaseDatabase.reference.child("group").child(idGroupCreate).setValue(groupCreate)
+            .addOnCompleteListener {
+                addRoomForUser(idGroupCreate, 0)
+
+            }
             .addOnFailureListener() {
                 Toast.makeText(getApplication(), "Create group failed", Toast.LENGTH_SHORT).show()
             }
@@ -70,6 +78,7 @@ class AddGroupViewModel @Inject constructor(
 
     fun deleteRoomForUser(roomId: String, userIndex: Int) {
         if (userIndex == listIDRemove.size) {
+//            doneEdit = true
             return
         } else {
             firebaseDatabase.reference
@@ -83,11 +92,14 @@ class AddGroupViewModel @Inject constructor(
                 }
         }
     }
+
     fun addRoomForUser(roomId: String, userIndex: Int) {
         if (userIndex == listIDChoose.size) {
-            if (!isEditGroup) {
+            if (isEditGroup == false) {
+//                doneCreate = true
                 return
             } else {
+//                doneEdit = false
                 deleteRoomForUser(roomId, 0)
             }
         } else {
@@ -102,12 +114,13 @@ class AddGroupViewModel @Inject constructor(
                 }
         }
     }
-    fun getGroup(idGroup: String): Group{
-        var listMem  = groupDao.getRoomById(idGroup) as ArrayList<GroupMember>
+
+    fun getGroup(idGroup: String): Group {
+        var listMem = groupDao.getRoomById(idGroup) as ArrayList<GroupMember>
 
         var groupGet = group ?: Group() // Use the existing group or create a new one
         groupGet.id = idGroup
-        for(mem in listMem){
+        for (mem in listMem) {
             groupGet.members.add(mem.id)
             groupGet.admin = mem.group!!.admin
             groupGet.name = mem.group!!.name
@@ -115,35 +128,22 @@ class AddGroupViewModel @Inject constructor(
         }
         return groupGet
     }
-    fun editGroup(){
+
+    fun editGroup() {
         var groupEdit = Group()
         groupEdit.id = idGroup!!
         groupEdit.admin = mAuth.currentUser!!.uid
         groupEdit.name = nameGroup
         groupEdit.avatar = avatarGroup
-        for(id in listIDChoose){
+        for (id in listIDChoose) {
             groupEdit.members.add(id)
         }
-//        listIDChoose.clear()
-//        for(id in groupEdit.members){
-//            listIDChoose.add(id!!)
-//        }
-        firebaseDatabase.reference.child("group").child(idGroup!!).setValue(groupEdit).addOnCompleteListener {
-            addRoomForUser(idGroup!!, 0)
-        }.addOnFailureListener() {
-                Toast.makeText(getApplication(), "Edit group failed", Toast.LENGTH_SHORT).show()
-            }
-
-    }
-    fun addGroup(){
-        if (listIDChoose.size >= 3) {
-            if (isEditGroup) {
-                editGroup()
-            } else {
-                createGroup()
-            }
-        } else {
-            Toast.makeText(getApplication(), "Please choose at least 3 friends", Toast.LENGTH_SHORT).show()
+        firebaseDatabase.reference.child("group").child(idGroup!!).setValue(groupEdit)
+            .addOnCompleteListener {
+                addRoomForUser(idGroup!!, 0)
+            }.addOnFailureListener() {
+            Toast.makeText(getApplication(), "Edit group failed", Toast.LENGTH_SHORT).show()
         }
+
     }
 }

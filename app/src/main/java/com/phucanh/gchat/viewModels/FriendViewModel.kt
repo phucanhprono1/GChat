@@ -59,118 +59,130 @@ class FriendViewModel @Inject constructor(
             }
         }
     }
+    fun getListFriend(){
+        if(listFriend == null){
+            listFriend.listFriend = friendDao.getAll() as ArrayList<Friend?>
+            if(listFriend.listFriend!!.size > 0){
+                for(friend in listFriend.listFriend!!){
+                    listFriendID.add(friend!!.id)
 
-    fun updateMessageAndStatus(listFriend1: ListFriend):ListFriend {
-        var listFriend = listFriend1
-        for(position in 0 until listFriend.listFriend!!.size){
-            var id = listFriend.listFriend!![position]?.id
-            var idRoom = listFriend.listFriend!![position]?.idRoom!!
-            Log.d("FriendViewModel", "idRoom: $idRoom")
-            Log.d("FriendViewModel", "id: $id")
-            Log.d("null", "null")
-            if (mapQuery[id] == null && ListFriendAdapter.mapChildListener[id] == null) {
-//                    Log.d("FriendsAdapter", "Message Content: ${listFriend.listFriend!![position]!!.user.message?.content}")
-//                    Log.d("FriendsAdapter", "Message Timestamp: ${listFriend.listFriend!![position]!!.user.message?.timestamp}")
-                mapQuery[id] =
-                    FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                        .reference.child("message")
-                        .child(idRoom)
-                        .limitToLast(1)
-
-                var childEventListener = object : ChildEventListener {
-                    override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                        val mapMessage = dataSnapshot.value as HashMap<*, *>?
-                        Log.d("ListFriendAdapter","${mapMessage?.get("content")}")
-                        Log.d("ListFriendAdapter","$id map mark: ${mapMark[id]}")
-//                            listFriendItem.user.message?.content = "$id${mapMessage!!["content"]}"
-                        if (mapMark[id] != null) {
-
-                            if (!mapMark[id]!!) {
-                                mapMark[id] = true
-
-                                // Update message content
-                                listFriend.listFriend?.get(position)!!!!.user.message?.content = "$id${mapMessage?.get("content")}"
-                                Log.d("ListFriendsAdapter", "Message Content: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
-
-                                // Notify the adapter on the UI thread
-
-                            } else {
-                                listFriend.listFriend?.get(position)!!.user.message?.content = mapMessage?.get("content") as String
-                                Log.d("ListFriendsAdapter", "Message Content 1: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
-                            }
-                        } else {
-                            listFriend.listFriend?.get(position)!!!!.user.message?.content = mapMessage?.get("content") as String
-                            Log.d("ListFriendsAdapter", "Message Content 2: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
-                        }
-                        listFriend.listFriend?.get(position)!!.user.message?.timestamp = mapMessage?.get("timestamp") as Long
-                    }
-
-
-                    override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-                    override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
-                    override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-                    override fun onCancelled(databaseError: DatabaseError) {}
                 }
-                mapChildListener[id] = childEventListener
-//                    mapQuery[id]?.addChildEventListener(childEventListener)
-                mapChildListener[id]?.let { mapQuery[id]?.addChildEventListener(it) }
-                Log.d("FriendsAdapter", "mapQuery[$id]: ${mapQuery[id]}")
-                mapMark[id] = true
-            }
-            else {
-                mapChildListener[id]?.let { mapQuery[id]?.removeEventListener(it) }
-                mapChildListener[id]?.let { mapQuery[id]?.addChildEventListener(it) }
-                mapMark[id] = true
-            }
-            if (mapQueryOnline[id] == null && mapChildListenerOnline[id] == null) {
-                mapQueryOnline[id] = id?.let {
-                    firebaseDatabase
-                        .getReference("users")
-                        .child(it)
-                        .child("status")
-                }
-
-                mapChildListenerOnline[id] = object : ChildEventListener {
-                    override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                        if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
-
-                            if (listFriend.listFriend?.get(position)!!.user != null && listFriend.listFriend?.get(position)!!.user.status == null) {
-                                listFriend.listFriend!![position]?.user?.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
-                                Log.d("FriendViewModel", "Is Online: ${listFriend.listFriend!![position]?.user?.status?.isOnline}")
-
-
-                            }
-
-                        }
-                    }
-
-                    override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
-                        if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
-
-
-                            if (listFriend.listFriend!![position]?.user != null && listFriend.listFriend!![position]?.user?.status != null) {
-                                listFriend.listFriend!![position]?.user?.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
-
-
-                            }
-                        }
-                    }
-
-                    override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
-
-                    override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-
-                    override fun onCancelled(databaseError: DatabaseError) {}
-                }
-                mapChildListenerOnline[id]?.let { mapQueryOnline[id]?.addChildEventListener(it) }
+                detectFriendOnline.start()
             }
         }
-        return listFriend
-
-
     }
+//    fun updateMessageAndStatus(listFriend1: ListFriend):ListFriend {
+//        var listFriend = listFriend1
+//        for(position in 0 until listFriend.listFriend!!.size){
+//            var id = listFriend.listFriend!![position]?.id
+//            var idRoom = listFriend.listFriend!![position]?.idRoom!!
+//            Log.d("FriendViewModel", "idRoom: $idRoom")
+//            Log.d("FriendViewModel", "id: $id")
+//            Log.d("null", "null")
+//            if (mapQuery[id] == null && ListFriendAdapter.mapChildListener[id] == null) {
+////                    Log.d("FriendsAdapter", "Message Content: ${listFriend.listFriend!![position]!!.user.message?.content}")
+////                    Log.d("FriendsAdapter", "Message Timestamp: ${listFriend.listFriend!![position]!!.user.message?.timestamp}")
+//                mapQuery[id] =
+//                    FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
+//                        .reference.child("message")
+//                        .child(idRoom)
+//                        .limitToLast(1)
+//
+//                var childEventListener = object : ChildEventListener {
+//                    override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+//                        val mapMessage = dataSnapshot.value as HashMap<*, *>?
+//                        Log.d("ListFriendAdapter","${mapMessage?.get("content")}")
+//                        Log.d("ListFriendAdapter","$id map mark: ${mapMark[id]}")
+////                            listFriendItem.user.message?.content = "$id${mapMessage!!["content"]}"
+//                        if (mapMark[id] != null) {
+//
+//                            if (!mapMark[id]!!) {
+//                                mapMark[id] = true
+//
+//                                // Update message content
+//                                listFriend.listFriend?.get(position)!!!!.user.message?.content = "$id${mapMessage?.get("content")}"
+//                                Log.d("ListFriendsAdapter", "Message Content: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
+//
+//                                // Notify the adapter on the UI thread
+//
+//                            } else {
+//                                listFriend.listFriend?.get(position)!!.user.message?.content = mapMessage?.get("content") as String
+//                                Log.d("ListFriendsAdapter", "Message Content 1: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
+//                            }
+//                        } else {
+//                            listFriend.listFriend?.get(position)!!!!.user.message?.content = mapMessage?.get("content") as String
+//                            Log.d("ListFriendsAdapter", "Message Content 2: $id ${listFriend.listFriend?.get(position)!!.user.message?.content}")
+//                        }
+//                        listFriend.listFriend?.get(position)!!.user.message?.timestamp = mapMessage?.get("timestamp") as Long
+//                    }
+//
+//
+//                    override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
+//                    override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
+//                    override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
+//                    override fun onCancelled(databaseError: DatabaseError) {}
+//                }
+//                mapChildListener[id] = childEventListener
+////                    mapQuery[id]?.addChildEventListener(childEventListener)
+//                mapChildListener[id]?.let { mapQuery[id]?.addChildEventListener(it) }
+//                Log.d("FriendsAdapter", "mapQuery[$id]: ${mapQuery[id]}")
+//                mapMark[id] = true
+//            }
+//            else {
+//                mapChildListener[id]?.let { mapQuery[id]?.removeEventListener(it) }
+//                mapChildListener[id]?.let { mapQuery[id]?.addChildEventListener(it) }
+//                mapMark[id] = true
+//            }
+//            if (mapQueryOnline[id] == null && mapChildListenerOnline[id] == null) {
+//                mapQueryOnline[id] = id?.let {
+//                    firebaseDatabase
+//                        .getReference("users")
+//                        .child(it)
+//                        .child("status")
+//                }
+//
+//                mapChildListenerOnline[id] = object : ChildEventListener {
+//                    override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+//                        if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
+//
+//                            if (listFriend.listFriend?.get(position)!!.user != null && listFriend.listFriend?.get(position)!!.user.status == null) {
+//                                listFriend.listFriend!![position]?.user?.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
+//                                Log.d("FriendViewModel", "Is Online: ${listFriend.listFriend!![position]?.user?.status?.isOnline}")
+//
+//
+//                            }
+//
+//                        }
+//                    }
+//
+//                    override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
+//                        if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
+//
+//
+//                            if (listFriend.listFriend!![position]?.user != null && listFriend.listFriend!![position]?.user?.status != null) {
+//                                listFriend.listFriend!![position]?.user?.status?.isOnline = dataSnapshot.getValue(Boolean::class.java) ?: false
+//
+//
+//                            }
+//                        }
+//                    }
+//
+//                    override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
+//
+//                    override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
+//
+//                    override fun onCancelled(databaseError: DatabaseError) {}
+//                }
+//                mapChildListenerOnline[id]?.let { mapQueryOnline[id]?.addChildEventListener(it) }
+//            }
+//        }
+//        return listFriend
+//
+//
+//    }
     fun refreshListFriend() {
         friendDao.deleteAll()
+        listFriend.listFriend.clear()
         StaticConfig.LIST_FRIEND_ID.clear()
         detectFriendOnline.cancel()
         listFriendID.clear()
@@ -238,6 +250,7 @@ class FriendViewModel @Inject constructor(
     }
     fun deleteFriend(idFriend: String) {
         Log.d("FriendViewModel", "deleteFriend: $idFriend")
+        val friend = friendDao.getFriendById(idFriend)
         friendRef.child(StaticConfig.UID)
             .orderByValue().equalTo(idFriend)
             .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -256,7 +269,15 @@ class FriendViewModel @Inject constructor(
                                     val idRemoval2 = (dataSnapshot.value as HashMap<*, *>).keys.iterator().next().toString()
                                     Log.d("FriendViewModel", "idRemoval2: $idRemoval2")
                                     friendRef.child(StaticConfig.UID).child(idRemoval).removeValue()
-                                    friendRef.child(idFriend).child(idRemoval2).removeValue()
+                                    friendRef.child(idFriend).child(idRemoval2).removeValue().addOnCompleteListener {
+                                        Log.d("FriendViewModel", "deleteFriend: ")
+                                        friendDao.deleteFriendById(idFriend)
+                                        StaticConfig.LIST_FRIEND_ID.remove(idFriend)
+                                        listFriendID.remove(idFriend)
+
+                                        listFriend.listFriend.remove(friend)
+                                        _listFriend.value = listFriend
+                                    }
 
                                 }
                             }
@@ -273,19 +294,18 @@ class FriendViewModel @Inject constructor(
                     // Handle onCancelled event
                 }
             })
-        friendDao.deleteFriendById(idFriend)
-        StaticConfig.LIST_FRIEND_ID.remove(idFriend)
+
         // Xóa bạn từ LiveData
-        val currentListFriend = _listFriend.value?.listFriend?.toMutableList()
-        currentListFriend?.removeIf { it?.id  == idFriend }
-        val updatedListFriend = ListFriend()
-        updatedListFriend.listFriend = currentListFriend as ArrayList<Friend?>
-        _listFriend.value = updatedListFriend
-
-        // Xóa bạn từ listFriendID
-        listFriendID.remove(idFriend)
-
-        // Xóa bạn từ StaticConfig.LIST_FRIEND_ID
-        StaticConfig.LIST_FRIEND_ID.remove(idFriend)
+//        val currentListFriend = _listFriend.value?.listFriend?.toMutableList()
+//        currentListFriend?.removeIf { it?.id  == idFriend }
+//        val updatedListFriend = ListFriend()
+//        updatedListFriend.listFriend = currentListFriend as ArrayList<Friend?>
+//        _listFriend.value = updatedListFriend
+//
+//        // Xóa bạn từ listFriendID
+//        listFriendID.remove(idFriend)
+//
+//        // Xóa bạn từ StaticConfig.LIST_FRIEND_ID
+//        StaticConfig.LIST_FRIEND_ID.remove(idFriend)
     }
 }

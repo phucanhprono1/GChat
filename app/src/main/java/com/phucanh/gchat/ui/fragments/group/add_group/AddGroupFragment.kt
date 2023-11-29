@@ -56,7 +56,7 @@ class AddGroupFragment : Fragment(), ListPeopleAdapter.FriendSelectionListener {
             if(arguments?.getString("groupId")!=null){
                 viewModel.listIDChoose.clear()
                 viewModel.listIDRemove.clear()
-                viewModel.isEditGroup = false
+      //          viewModel.isEditGroup = false
                 viewModel.idGroup = null
                 viewModel.avatarGroup = null
                 viewModel.avatarGroupUri = null
@@ -105,21 +105,27 @@ class AddGroupFragment : Fragment(), ListPeopleAdapter.FriendSelectionListener {
         }
         viewModel.nameGroup = binding.editGroupName.text.toString()
         viewModel.listIDChoose.add(StaticConfig.UID)
+
         binding.btnAddGroup.setOnClickListener {
 
             if(viewModel.listIDChoose.size>=3 && viewModel.nameGroup!=null && viewModel.avatarGroup!=null){
-                if(viewModel.isEditGroup){
+                binding.btnAddGroup.isClickable = false
+                if(viewModel.isEditGroup == true ){
                     viewModel.nameGroup = binding.editGroupName.text.toString()
                     viewModel.editGroup()
+
                 }
                 else{
                     viewModel.nameGroup = binding.editGroupName.text.toString()
                     viewModel.createGroup()
                 }
-                var bundle = Bundle()
-                bundle.putString("groupEdited","edited")
-                setFragmentResult("addGroupFragmentResult", bundle)
-                findNavController().popBackStack()
+
+                    var bundle = Bundle()
+                    bundle.putString("groupEdited", "edited")
+                    setFragmentResult("addGroupFragmentResult", bundle)
+                    findNavController().popBackStack()
+
+
             }
             else{
                 Toast.makeText(requireContext(),"Please fill all information",Toast.LENGTH_SHORT).show()
@@ -133,6 +139,11 @@ class AddGroupFragment : Fragment(), ListPeopleAdapter.FriendSelectionListener {
         if (takePictureIntent.resolveActivity(requireActivity().packageManager) != null) {
             startActivityForResult(takePictureIntent, StaticConfig.CAMERA_REQUEST_CODE)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        onBackPressedCallback.remove()
     }
     private fun chooseImage() {
         val intent = Intent()

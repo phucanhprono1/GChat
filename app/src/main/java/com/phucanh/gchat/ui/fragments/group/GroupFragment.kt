@@ -73,6 +73,12 @@ class GroupFragment : Fragment() {
         binding.addGroup.setOnClickListener {
             addGroupViewModel.listIDChoose.clear()
             addGroupViewModel.listIDRemove.clear()
+            addGroupViewModel.isEditGroup= false
+            addGroupViewModel.isCreate = true
+            addGroupViewModel.avatarGroup = null
+            addGroupViewModel.avatarGroupUri = null
+            addGroupViewModel.nameGroup = null
+            addGroupViewModel.group = null
             findNavController().navigate(R.id.action_groupFragment_to_addGroupFragment)
         }
         if(viewModel.listGroup.size==0){
@@ -90,11 +96,12 @@ class GroupFragment : Fragment() {
                         Log.d("GroupFragment", "onCreat: " + bundle.getString("groupEdited"))
 //                        addGroupViewModel.listIDChoose.clear()
 //                        addGroupViewModel.listIDRemove.clear()
-                        addGroupViewModel.avatarGroup = null
-                        addGroupViewModel.avatarGroupUri = null
-                        addGroupViewModel.nameGroup = null
-                        addGroupViewModel.isEditGroup = false
-                        addGroupViewModel.group = null
+
+//                        addGroupViewModel.avatarGroup = null
+//                        addGroupViewModel.avatarGroupUri = null
+//                        addGroupViewModel.nameGroup = null
+////                        addGroupViewModel.isEditGroup = false
+//                        addGroupViewModel.group = null
                         viewModel.refreshListGroup()
                         adapter!!.notifyDataSetChanged()
 
@@ -157,10 +164,11 @@ class GroupFragment : Fragment() {
                                         findNavController().navigate(R.id.action_groupFragment_to_addGroupFragment, bundle)
                                         addGroupViewModel.listIDChoose.clear()
                                         addGroupViewModel.listIDRemove.clear()
+                                        addGroupViewModel.isEditGroup = true
+                                        addGroupViewModel.isCreate = false
                                         addGroupViewModel.avatarGroup = null
                                         addGroupViewModel.avatarGroupUri = null
                                         addGroupViewModel.nameGroup = null
-                                        addGroupViewModel.isEditGroup = false
                                         addGroupViewModel.group = null
                                     } else {
                                         Toast.makeText(requireActivity(), "You are not admin", Toast.LENGTH_LONG).show()

@@ -124,7 +124,9 @@ class ChatFragment : Fragment() {
                 listMessageAdapter!!.notifyDataSetChanged()
                 binding.recyclerChat.adapter = listMessageAdapter
                 binding.recyclerChat.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false  )
-                binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
+                if(listMessageAdapter!!.itemCount>0){
+                    binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
+                }
 
             }
         }
@@ -137,7 +139,9 @@ class ChatFragment : Fragment() {
             binding.btnChooseImageMessage.visibility = View.VISIBLE
         }
         binding.editWriteMessage.setOnClickListener {
-            binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
+            if(viewModel.conversation.listMessageData.size>0){
+                binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
+            }
             binding.btnMoreAction.visibility = View.VISIBLE
             binding.btnChooseVideoMessage.visibility = View.GONE
             binding.btnChooseImageMessage.visibility = View.GONE
@@ -146,15 +150,22 @@ class ChatFragment : Fragment() {
             if(binding.editWriteMessage.text.toString().trim().isNotEmpty()){
                 viewModel.sendMessage(binding.editWriteMessage.text.toString().trim(), viewModel.roomId, 0,idFriend!!,null)
                 binding.editWriteMessage.setText("")
-                binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
+                if(viewModel.conversation.listMessageData.size>0){
+                    binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
+                }
+
             }
         }
         binding.btnChooseImageMessage.setOnClickListener{
-            binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
+            if(viewModel.conversation.listMessageData.size>0){
+                binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
+            }
             showImagePickerDialog(requireContext())
         }
         binding.btnChooseVideoMessage.setOnClickListener{
-            binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
+            if(viewModel.conversation.listMessageData.size>0){
+                binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)
+            }
             chooseVideo()
         }
 

@@ -53,6 +53,7 @@ class FriendFragment : Fragment() {
                 // Handle the delete friend action here
                 Log.d("FriendFragment", "onReceive: $friendId")
                 viewModel.deleteFriend(friendId!!)
+                listFriendsAdapter?.notifyDataSetChanged()
             }
         }
     }
@@ -81,7 +82,7 @@ class FriendFragment : Fragment() {
 
         }
         // TODO: Use the ViewModel\
-        if (viewModel.listFriendID.size == 0) {
+        if (viewModel.listFriendID?.size == 0) {
             binding.swipeRefresh.isRefreshing = true
 //            viewModel.getListFriendUId()
             viewModel.refreshListFriend()
