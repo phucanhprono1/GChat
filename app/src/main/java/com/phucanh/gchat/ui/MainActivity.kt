@@ -3,15 +3,13 @@ package com.phucanh.gchat.ui
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
@@ -23,10 +21,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.phucanh.gchat.R
 import com.phucanh.gchat.databinding.ActivityMainBinding
-import com.phucanh.gchat.models.FriendRequest
 import com.phucanh.gchat.utils.ServiceUtils
 import com.phucanh.gchat.utils.StaticConfig
-import com.phucanh.gchat.viewModels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,12 +33,22 @@ class MainActivity : AppCompatActivity() {
     private var uid: String = ""
     private lateinit var currentUserDB: DatabaseReference
     private lateinit var friendRequestDB: DatabaseReference
+    var detectFriendOnline = object : CountDownTimer(System.currentTimeMillis(), StaticConfig.TIME_TO_REFRESH) {
+        override fun onTick(l: Long) {
+            ServiceUtils.updateUserStatus(applicationContext)
+        }
+
+        override fun onFinish() {}
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         mAuth = FirebaseAuth.getInstance()
         uid = mAuth.currentUser?.uid!!
+
+        detectFriendOnline.start()
         StaticConfig.UID = uid
         checkNotificationPermission()
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)

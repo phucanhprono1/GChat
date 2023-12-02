@@ -116,9 +116,15 @@ class OptionsFragment : Fragment() {
     }
     override fun onDestroyView() {
         super.onDestroyView()
-        signoutreceiver.let {
-            requireContext().unregisterReceiver(it)
-        }
+        requireContext().unregisterReceiver(signoutreceiver)
+    }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        this.context = context
+    }
+    override fun onResume() {
+        super.onResume()
+        requireContext().registerReceiver(signoutreceiver, IntentFilter(SIGN_OUT))
     }
     inner class UserInfoAdapter(private var profileConfig: List<Configuration>,val friendDao: FriendDao) : RecyclerView.Adapter<UserInfoAdapter.ViewHolder>() {
         fun updateData(newData: List<Configuration>) {

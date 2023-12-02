@@ -30,23 +30,23 @@ import javax.inject.Inject
 @HiltViewModel
 class ViewProfileViewModel @Inject constructor(val userReference: DatabaseReference,val firebaseDatabase: FirebaseDatabase,application:Application) : AndroidViewModel(application) {
     // TODO: Implement the ViewModel
-    val chosenuser : MutableLiveData<User> = MutableLiveData()
+    var chosenuser : User= User()
 //    init {
 //        checkFriendRequest(StaticConfig.UID)
 //    }
-    fun getCurrentUser(uid:String){
+    fun getCurrentUser(uid:String): User {
+        var user = User()
         userReference.child(uid).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val user = snapshot.getValue(User::class.java)
-                user?.let {
-                    chosenuser.value = it
-                }
+                user = snapshot.getValue(User::class.java)!!
+
             }
 
             override fun onCancelled(error: DatabaseError) {
                 // Handle the error
             }
         })
+        return user
     }
     fun sendPushNotification(receiverUserId: String, notificationMessage: String) {
         Log.d(
