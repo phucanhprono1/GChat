@@ -185,7 +185,7 @@ class ListFriendAdapter(
 
                             if (mapIsOnline[id] == null ) {
                                 mapIsOnline[id] = dataSnapshot.getValue(Boolean::class.java) ?: false
-                                Log.d("FriendsAdapter", "Is Online: ${listFriend.listFriend!![position]!!.user.status?.isOnline}")
+                                Log.d("FriendsAdapter", "Is Online: ${mapIsOnline[id]}")
 
                                 notifyDataSetChanged()
                             }
@@ -197,7 +197,7 @@ class ListFriendAdapter(
                         if (dataSnapshot.value != null && dataSnapshot.key == "isOnline") {
                             if (mapIsOnline[id] == null ) {
                                 mapIsOnline[id] = dataSnapshot.getValue(Boolean::class.java) ?: false
-                                Log.d("FriendsAdapter", "Is Online: ${listFriend.listFriend!![position]!!.user.status?.isOnline}")
+                                Log.d("FriendsAdapter", "Is Online: ${mapIsOnline[id]}")
 
                                 notifyDataSetChanged()
                             }

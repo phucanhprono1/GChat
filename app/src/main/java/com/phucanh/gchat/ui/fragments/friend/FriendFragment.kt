@@ -177,6 +177,7 @@ class FriendFragment : Fragment() {
         viewModel._listFriend.observe(viewLifecycleOwner) {
             if(it==null)binding.swipeRefresh.isRefreshing = true
             else{
+                viewModel.detectFriendOnline.start()
                 binding.swipeRefresh.isRefreshing = false
                 listFriendsAdapter = ListFriendAdapter(requireContext(),it, findNavController())
                 listFriendsAdapter!!.notifyDataSetChanged()
