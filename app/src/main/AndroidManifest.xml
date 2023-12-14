@@ -47,9 +47,7 @@
                     <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="com.phucanh.gchat.services.FriendChatService"
-            android:exported="false"
-            android:persistent="true"/>
+
         <activity
             android:name=".ui.AddInfoActivity"
             android:exported="false" />

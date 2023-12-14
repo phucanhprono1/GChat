@@ -10,70 +10,10 @@ import android.net.ConnectivityManager
 import android.os.IBinder
 import com.google.firebase.database.*
 import com.phucanh.gchat.models.ListFriend
-import com.phucanh.gchat.services.FriendChatService
 
 object ServiceUtils {
 
-    private var connectionServiceFriendChatForStart: ServiceConnection? = null
-    private var connectionServiceFriendChatForDestroy: ServiceConnection? = null
 
-    fun isServiceFriendChatRunning(context: Context): Boolean {
-        val serviceClass = FriendChatService::class.java
-        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name == service.service.className) {
-                return true
-            }
-        }
-        return false
-    }
-
-    fun stopServiceFriendChat(context: Context, kill: Boolean) {
-        if (isServiceFriendChatRunning(context)) {
-            val intent = Intent(context, FriendChatService::class.java)
-            if (connectionServiceFriendChatForDestroy != null) {
-                context.unbindService(connectionServiceFriendChatForDestroy!!)
-            }
-            connectionServiceFriendChatForDestroy = object : ServiceConnection {
-                override fun onServiceConnected(className: ComponentName, service: IBinder) {
-                    val binder = service as FriendChatService.LocalBinder
-                    binder.getService().stopSelf()
-                }
-
-                override fun onServiceDisconnected(arg0: ComponentName) {}
-            }
-            context.bindService(intent,
-                connectionServiceFriendChatForDestroy as ServiceConnection, Context.BIND_NOT_FOREGROUND)
-        }
-    }
-
-
-    fun startServiceFriendChat(context: Context) {
-        if (!isServiceFriendChatRunning(context)) {
-            val myIntent = Intent(context, FriendChatService::class.java)
-            context.startService(myIntent)
-        } else {
-            if (connectionServiceFriendChatForStart != null) {
-                context.unbindService(connectionServiceFriendChatForStart!!)
-            }
-            connectionServiceFriendChatForStart = object : ServiceConnection {
-                override fun onServiceConnected(className: ComponentName, service: IBinder) {
-                    val binder = service as FriendChatService.LocalBinder
-                    val listFriend = binder.getService().listFriend?.listFriend
-                    if (listFriend != null) {
-                        for (friend in listFriend) {
-                            binder.getService().mapMark[friend?.idRoom] = true
-                        }
-                    }
-                }
-
-                override fun onServiceDisconnected(arg0: ComponentName) {}
-            }
-            val intent = Intent(context, FriendChatService::class.java)
-            context.bindService(intent,
-                connectionServiceFriendChatForStart as ServiceConnection, Context.BIND_NOT_FOREGROUND)
-        }
-    }
 
     fun updateUserStatus(context: Context) {
         if (isNetworkConnected(context)) {

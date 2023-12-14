@@ -58,10 +58,10 @@ class MainActivity : AppCompatActivity() {
 
             if (destination.id == R.id.friendRequestFragment  || destination.id == R.id.searchFragment || destination.id == R.id.viewProfileFragment || destination.id==R.id.chatFragment || destination.id == R.id.addGroupFragment) {
                 hideBottomNav()
-                ServiceUtils.stopServiceFriendChat(applicationContext, false)
+
             } else {
                 showBottomNav()
-                ServiceUtils.stopServiceFriendChat(applicationContext, false)
+
             }
         }
         if(StaticConfig.UID == null || StaticConfig.UID !=mAuth.currentUser?.uid){
@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        ServiceUtils.stopServiceFriendChat(applicationContext, false)
+
     }
     override fun onRestart() {
         super.onRestart()
@@ -172,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         StaticConfig.UID = ""
         StaticConfig.LIST_FRIEND_ID.clear()
         StaticConfig.LIST_FRIEND_REQUEST_ID.clear()
-        ServiceUtils.startServiceFriendChat(applicationContext)
+        detectFriendOnline.cancel()
 
     }
     fun finishMain(){

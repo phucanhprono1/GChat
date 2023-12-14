@@ -231,6 +231,36 @@ import com.phucanh.gchat.utils.StaticConfig
 //    }
 
     inner class PlayerListener(private val holder: RecyclerView.ViewHolder) : Player.Listener {
+        init {
+            if (holder is ItemMessageFriendHolder) {
+                holder.playerView?.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                    override fun onViewAttachedToWindow(v: View) {
+                        // View attached to window
+                    }
+
+                    override fun onViewDetachedFromWindow(v: View) {
+                        // View detached from window
+                        holder.player?.release()
+                        holder.playerView?.player?.release()
+                        holder.playerView?.player = null
+
+                    }
+                })
+            } else if (holder is ItemMessageUserHolder) {
+                holder.playerView?.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                    override fun onViewAttachedToWindow(v: View) {
+                        // View attached to window
+                    }
+
+                    override fun onViewDetachedFromWindow(v: View) {
+                        // View detached from window
+                        holder.player?.release()
+                        holder.playerView?.player?.release()
+                        holder.playerView?.player = null
+                    }
+                })
+            }
+        }
         override fun onPlaybackStateChanged(playbackState: Int) {
             super.onPlaybackStateChanged(playbackState)
             if(holder is ItemMessageFriendHolder){
@@ -310,6 +340,26 @@ import com.phucanh.gchat.utils.StaticConfig
                     // Renderer error
                     Log.e(TAG, "Renderer error: ${error.errorCodeName}")
                     // Handle renderer error here
+                    if ( holder is ItemMessageFriendHolder){
+                        holder.player?.release()
+                        holder.playerView?.player?.release()
+                        holder.playerView?.player = null
+                        holder.frameVideo?.visibility = View.GONE
+                        holder.imgContent.visibility = View.VISIBLE
+                        holder.txtContent.visibility = View.VISIBLE
+                        holder.txtContent.text = conversation.listMessageData[holder.adapterPosition].fileName
+                        Glide.with(holder.itemView).load(R.drawable.placeholder_video).override(400, 600).into(holder.imgContent)
+                    }
+                    else if (holder is ItemMessageUserHolder){
+                        holder.player?.release()
+                        holder.playerView?.player?.release()
+                        holder.playerView?.player = null
+                        holder.frameVideo?.visibility = View.GONE
+                        holder.imgContent.visibility = View.VISIBLE
+                        holder.txtContent.visibility = View.VISIBLE
+                        holder.txtContent.text = conversation.listMessageData[holder.adapterPosition].fileName
+                        Glide.with(holder.itemView).load(R.drawable.placeholder_video).override(400, 600).into(holder.imgContent)
+                    }
                 }
                 ExoPlaybackException.TYPE_UNEXPECTED -> {
                     // Unexpected error
