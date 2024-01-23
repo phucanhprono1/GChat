@@ -180,4 +180,6 @@ dependencies {
     implementation("androidx.media3:media3-datasource:$media3_version")
     // Common functionality used across multiple media libraries
     implementation("androidx.media3:media3-common:$media3_version")
+    implementation ("com.google.code.gson:gson:2.8.9") // Use the latest version available
+
 }

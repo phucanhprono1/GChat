@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "415852211071-guun3btnc01ebn5ldvdoemna7n21i6r3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phucanh.gchat",
+            "certificate_hash": "3c0a4a7b1682fcbe5179054ae2cb081dba6566a1"
+          }
+        },
+        {
           "client_id": "415852211071-6dtvh0fbmj7v00tr7l46ssp14vml2dp1.apps.googleusercontent.com",
           "client_type": 3
         }

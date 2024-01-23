@@ -95,6 +95,7 @@ class ViewProfileViewModel @Inject constructor(val userReference: DatabaseRefere
             val jsonObject = JSONObject()
             val notificationObj = JSONObject()
             notificationObj.put("title", StaticConfig.NAME)
+
             notificationObj.put("body", notificationMessage)
             val dataObj = JSONObject()
             jsonObject.put("notification", notificationObj)

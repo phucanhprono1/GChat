@@ -8,16 +8,26 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.net.ConnectivityManager
 import android.os.IBinder
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.phucanh.gchat.models.ListFriend
+import java.lang.reflect.Type
 
 object ServiceUtils {
 
+    fun stringToCharSequenceList(str: String): ArrayList<CharSequence> {
+        // Remove square brackets and split the string by commas
+        val elements = str.substring(1, str.length - 1).split(", ")
 
+        // Convert each element to CharSequence and create an ArrayList
+        return ArrayList(elements.map { it as CharSequence })
+    }
 
     fun updateUserStatus(context: Context) {
         if (isNetworkConnected(context)) {
-            val uid = StaticConfig.UID
+            val uid = FirebaseAuth.getInstance().currentUser?.uid
             if (uid != "") {
                 FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
                     .getReference("users/$uid/status/isOnline")

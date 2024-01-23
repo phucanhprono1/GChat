@@ -79,6 +79,8 @@ class LoginActivity : AppCompatActivity() {
                         updateUI(user)
                     } else {
                         Toast.makeText(this@LoginActivity, "Incorrect email or password.", Toast.LENGTH_SHORT).show()
+                        binding.progressBar.visibility = View.GONE
+                        binding.buttonSignIn.visibility = View.VISIBLE
                     }
                 }
         }

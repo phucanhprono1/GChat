@@ -28,6 +28,7 @@ object StaticConfig {
     const val INTENT_KEY_CHAT_AVATA = "friendavata"
     const val INTENT_KEY_CHAT_ID = "friendid"
     const val INTENT_KEY_CHAT_ROOM_ID = "roomid"
+    const val INTENT_KEY_CHAT_IS_GROUP = "isGroup"
     const val TIME_TO_REFRESH = 1 * 1000.toLong()
     const val TIME_TO_OFFLINE = 2 * 1000.toLong()
     var ID_FRIEND_REQ: String? = null

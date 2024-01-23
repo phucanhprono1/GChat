@@ -6,6 +6,7 @@ import android.os.CountDownTimer
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -87,7 +88,7 @@ class FriendViewModel @Inject constructor(
 
 
     fun getListFriendUId() {
-        friendRef.child(StaticConfig.UID).addValueEventListener(object : ValueEventListener {
+        friendRef.child(FirebaseAuth.getInstance().currentUser!!.uid).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
                 for (snapshot in dataSnapshot.children) {
@@ -146,7 +147,7 @@ class FriendViewModel @Inject constructor(
     fun deleteFriend(idFriend: String) {
         Log.d("FriendViewModel", "deleteFriend: $idFriend")
         val friend = friendDao.getFriendById(idFriend)
-        friendRef.child(StaticConfig.UID)
+        friendRef.child(FirebaseAuth.getInstance().currentUser!!.uid)
             .orderByValue().equalTo(idFriend)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {

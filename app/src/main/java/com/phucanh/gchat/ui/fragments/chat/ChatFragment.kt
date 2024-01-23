@@ -32,17 +32,26 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.OnProgressListener
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.phucanh.gchat.R
+import com.phucanh.gchat.databinding.ActivityMainBinding
 import com.phucanh.gchat.databinding.FragmentChatBinding
+import com.phucanh.gchat.ui.MainActivity
 import com.phucanh.gchat.utils.StaticConfig
 import com.phucanh.gchat.viewModels.ChatViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import javax.inject.Inject
+
 @UnstableApi @AndroidEntryPoint
 class ChatFragment : Fragment() {
 
@@ -52,9 +61,40 @@ class ChatFragment : Fragment() {
         val VIEW_TYPE_FRIEND_MESSAGE = 1
 
     }
+    private var uid: String = ""
+    private lateinit var currentUserDB: DatabaseReference
+    private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            // User is signed in, retrieve UID
+            uid = user.uid
+            StaticConfig.UID = uid
+            currentUserDB = FirebaseDatabase.getInstance(getString(R.string.firebase_database_url)).getReference("/users/$uid")
+            currentUserDB = FirebaseDatabase.getInstance(getString(R.string.firebase_database_url)).getReference("/users/$uid")
+            currentUserDB.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
 
-
+                    StaticConfig.NAME = snapshot.child("name").value.toString()
+                    StaticConfig.AVATA = snapshot.child("avata").value.toString()
+                    StaticConfig.ADDRESS = snapshot.child("address").value.toString()
+                    StaticConfig.BIRTHDAY = snapshot.child("dob").value.toString()
+                    StaticConfig.EMAIL = snapshot.child("email").value.toString()
+                    StaticConfig.BIO = snapshot.child("bio").value.toString()
+                    StaticConfig.JOINEDDATE = snapshot.child("joinedDate").value.toString()
+                    StaticConfig.PHONENUMBER = snapshot.child("phonenumber").value.toString()
+                    StaticConfig.FCMTOKEN = snapshot.child("fcmToken").value.toString()
+                }
+                override fun onCancelled(error: DatabaseError) {
+                }
+            })
+            // ... (other code related to retrieving user information)
+        } else {
+            // User is signed out
+            // Handle the case when the user is not signed in
+        }
+    }
     var idFriend = ArrayList<CharSequence>()
+
 
     private val viewModel by activityViewModels<ChatViewModel>()
     private lateinit var binding: FragmentChatBinding
@@ -68,6 +108,7 @@ class ChatFragment : Fragment() {
     ): View? {
         binding = FragmentChatBinding.inflate(layoutInflater,container,false)
         return binding.root
+
     }
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -86,14 +127,31 @@ class ChatFragment : Fragment() {
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        val uid = arguments?.getString("uid")
+        FirebaseAuth.getInstance().addAuthStateListener(authStateListener)
         idFriend = arguments?.getCharSequenceArrayList(StaticConfig.INTENT_KEY_CHAT_ID)!!
+
         val nameFriend = arguments?.getString(StaticConfig.INTENT_KEY_CHAT_FRIEND)
         val avataFriend = arguments?.getString(StaticConfig.INTENT_KEY_CHAT_AVATA)
+
         viewModel.roomId = arguments?.getString(StaticConfig.INTENT_KEY_CHAT_ROOM_ID)!!
         Glide.with(requireContext()).load(avataFriend).apply(RequestOptions.circleCropTransform()).into(binding.chatAvatar)
-        viewModel.roomName = nameFriend!!
+        Log.d("ChatFragment", "onActivityCreated: ${arguments?.getString(StaticConfig.INTENT_KEY_CHAT_ROOM_ID)}")
+        Log.d("ChatFragment", "onActivityCreated: ${arguments?.getBoolean(StaticConfig.INTENT_KEY_CHAT_IS_GROUP)}")
+        viewModel.isGroupChat = arguments?.getBoolean(StaticConfig.INTENT_KEY_CHAT_IS_GROUP)
+        if (arguments?.getBoolean(StaticConfig.INTENT_KEY_CHAT_IS_GROUP)==true){
+            viewModel.roomName = arguments?.getString(StaticConfig.INTENT_KEY_CHAT_FRIEND)!!
+            viewModel.avatar = avataFriend!!
+            viewModel.friendids = idFriend
+        }
+        else{
+            viewModel.roomName = StaticConfig.NAME
+            viewModel.avatar = StaticConfig.AVATA
+            viewModel.friendids = ArrayList<CharSequence>().apply {
+                StaticConfig.UID?.let {
+                    add(it)
+                }
+            }
+        }
         binding.chatName.text = nameFriend
         binding.backButtonChat.setOnClickListener {
 
@@ -113,7 +171,7 @@ class ChatFragment : Fragment() {
             viewModel.listMessage.value = null
             viewModel.listMessage.removeObservers(viewLifecycleOwner)
         }
-        Log.d("ChatFragment", "onActivityCreated: ${viewModel.mapAvatar.toString()}")
+
 
        // listMessageAdapter = ListMessageAdapter(requireContext(), null, mapAvataFriend, StaticConfig.AVATA)
         viewModel.getListMessage(viewModel.roomId!!)

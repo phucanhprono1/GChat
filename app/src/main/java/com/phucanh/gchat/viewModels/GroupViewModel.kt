@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -41,7 +42,7 @@ class GroupViewModel @Inject constructor(val firebaseDatabase: FirebaseDatabase,
 
     }
     fun getListGroup(){
-        userRef.child(StaticConfig.UID).child("group").addListenerForSingleValueEvent(object : ValueEventListener {
+        userRef.child(FirebaseAuth.getInstance().currentUser!!.uid).child("group").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.value != null) {
                     val mapListGroup = dataSnapshot.value as HashMap<*, *>
@@ -93,7 +94,7 @@ class GroupViewModel @Inject constructor(val firebaseDatabase: FirebaseDatabase,
     }
     fun leaveGroup(group: Group) {
         val groupReference = firebaseDatabase.reference.child("group/${group.id}/members")
-        groupReference.orderByValue().equalTo(StaticConfig.UID).addListenerForSingleValueEvent(object : ValueEventListener {
+        groupReference.orderByValue().equalTo(FirebaseAuth.getInstance().currentUser!!.uid).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.value == null) {
                     Toast.makeText(getApplication(), "You are not in this group", Toast.LENGTH_SHORT).show()
@@ -108,7 +109,7 @@ class GroupViewModel @Inject constructor(val firebaseDatabase: FirebaseDatabase,
                     }
 
                     val userReference = firebaseDatabase.reference.child("users")
-                        .child(StaticConfig.UID).child("group").child(group.id)
+                        .child(FirebaseAuth.getInstance().currentUser!!.uid).child("group").child(group.id)
 
                     userReference.removeValue()
 

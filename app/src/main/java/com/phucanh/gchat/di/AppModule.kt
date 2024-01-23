@@ -10,11 +10,13 @@ import com.google.firebase.storage.StorageReference
 import com.phucanh.gchat.room.AppDatabase
 import com.phucanh.gchat.room.FriendDao
 import com.phucanh.gchat.room.GroupDao
+import com.phucanh.gchat.viewModels.ChatViewModel
 
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 
 @Module
@@ -26,31 +28,42 @@ object AppModule {
     }
 
     @Provides
+    @Singleton
     fun provideStorageReference(): StorageReference {
         return FirebaseStorage.getInstance().reference
     }
+
     @Provides
     fun providesUserReference(): DatabaseReference {
         return FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("users")
     }
+
     @Provides
     fun provideFriendReference(): FirebaseDatabase {
         return FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
     }
+
     @Provides
     fun provideAppDatabase(context: Context): AppDatabase {
-        return return Room.databaseBuilder(
+        return Room.databaseBuilder(
             context.applicationContext,
             AppDatabase::class.java, "gchat.db"
         ).allowMainThreadQueries()
             .build()
     }
+
     @Provides
     fun provideFriendDao(appDatabase: AppDatabase): FriendDao {
         return appDatabase.friendDao()
     }
+
     @Provides
     fun provideGroupDao(appDatabase: AppDatabase): GroupDao {
         return appDatabase.groupDao()
+    }
+
+    @Provides
+    fun provideChatViewModel(userReference: DatabaseReference, firebaseDatabase: FirebaseDatabase, application: Application): ChatViewModel {
+        return ChatViewModel(userReference, firebaseDatabase, application)
     }
 }

@@ -23,6 +23,7 @@ import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 
 import com.google.firebase.database.DatabaseReference
 
@@ -384,7 +385,7 @@ import com.phucanh.gchat.utils.StaticConfig
         play(holder)
     }
     override fun getItemViewType(position: Int): Int {
-        return if (conversation.listMessageData[position].idSender == StaticConfig.UID) {
+        return if (conversation.listMessageData[position].idSender == FirebaseAuth.getInstance().currentUser?.uid) {
             ChatFragment.VIEW_TYPE_USER_MESSAGE
         } else {
             ChatFragment.VIEW_TYPE_FRIEND_MESSAGE

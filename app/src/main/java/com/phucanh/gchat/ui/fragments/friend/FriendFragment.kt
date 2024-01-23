@@ -60,7 +60,8 @@ class FriendFragment : Fragment() {
     private val chatViewModel by activityViewModels<ChatViewModel>()
     private lateinit var binding: FragmentFriendBinding
     var listFriendsAdapter: ListFriendAdapter? = null
-    private val deleteFriendReceiver = object : BroadcastReceiver() {
+    private var isReceiverRegistered = false
+    public val deleteFriendReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == DELETE_FRIEND) {
                 val friendId = intent.getStringExtra("friendId")
@@ -109,57 +110,7 @@ class FriendFragment : Fragment() {
             findNavController().navigate(R.id.action_friendFragment_to_searchFragment)
 
         }
-//        if(listFriend == null) {
-//            listFriend?.listFriend = friendDao.getAll() as ArrayList<Friend?>
-//            if(listFriend?.listFriend!!.size > 0) {
-//                for(friend in listFriend?.listFriend!!) {
-//                    listFriendID.add(friend?.id!!)
-//                    StaticConfig.LIST_FRIEND_ID.add(friend?.id!!)
-//                }
-//            }
-//
-//        }
-//        if(listFriendID.size == 0) {
-//            getListFriendUId()
-//        }
-//        listFriendsAdapter = ListFriendAdapter(requireContext(), listFriend!!, findNavController())
-//        listFriendsAdapter!!.notifyDataSetChanged()
-//        listFriendsAdapter!!.setOnClickListener(object : ListFriendAdapter.OnClickListener {
-//            override fun onClick(position: Int) {
-//                val friend = viewModel.listFriend.listFriend?.get(position)
-//                val bundle = Bundle()
-//                Log.d("FriendFragment", "onClick: ${friend?.id}")
-//                var idFriend: ArrayList<CharSequence> = ArrayList()
-//                idFriend.add(friend?.id!!)
-//                bundle.putCharSequenceArrayList(StaticConfig.INTENT_KEY_CHAT_ID, idFriend)
-//                bundle.putString(StaticConfig.INTENT_KEY_CHAT_FRIEND, friend?.user?.name)
-//                bundle.putString(StaticConfig.INTENT_KEY_CHAT_ROOM_ID, friend?.idRoom)
-//                bundle.putString(StaticConfig.INTENT_KEY_CHAT_AVATA, friend?.user?.avata)
-//                chatViewModel.mapAvatar = HashMap()
-//                if(!friend?.user?.avata.equals(StaticConfig.STR_DEFAULT_URI)) {
-//                    chatViewModel.mapAvatar[friend?.id!!] = friend?.user?.avata!!
-//                }
-//                else {
-//                    chatViewModel.mapAvatar[friend?.id!!] = StaticConfig.STR_DEFAULT_URI
-//                }
-//                findNavController().navigate(R.id.action_global_chatFragment, bundle)
-//                ListFriendAdapter.mapMark[friend?.id!!] = null
-//            }
-//
-//        })
-//        listFriendsAdapter!!.setOnLongClickListener(object : ListFriendAdapter.OnLongClickListener {
-//            override fun onLongClick(view: View): Boolean {
-//                val position = binding.recycleListFriend.getChildAdapterPosition(view)
-//
-//                val friend = viewModel.listFriend.listFriend?.get(position)
-//                Log.d("FriendFragment", "onLongClick: ${friend?.id}")
-//                showDialogConfirmDeleteFriend(friend?.id, ServiceUtils.isNetworkConnected(requireContext()))
-//                return true
-//            }
-//
-//        })
-//
-//        viewModel.detectFriendOnline.start()
+
 
         binding.swipeRefresh.setOnRefreshListener {
             if (ServiceUtils.isNetworkConnected(requireContext())) {
@@ -173,6 +124,7 @@ class FriendFragment : Fragment() {
         }
         val filter = IntentFilter(DELETE_FRIEND)
         requireContext().registerReceiver(deleteFriendReceiver, filter)
+        isReceiverRegistered = true
 
         viewModel._listFriend.observe(viewLifecycleOwner) {
             if(it==null)binding.swipeRefresh.isRefreshing = true
@@ -226,11 +178,15 @@ class FriendFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         // Unregister the BroadcastReceiver in the onDestroy method
-        requireContext().unregisterReceiver(deleteFriendReceiver)
+        if(isReceiverRegistered) {
+            requireContext().unregisterReceiver(deleteFriendReceiver)
+            isReceiverRegistered = false
+        }
     }
     override fun onResume() {
         super.onResume()
         requireContext().registerReceiver(deleteFriendReceiver, IntentFilter(DELETE_FRIEND))
+        isReceiverRegistered = true
     }
     fun showDialogConfirmDeleteFriend(idFriend: String?, connected: Boolean) {
 

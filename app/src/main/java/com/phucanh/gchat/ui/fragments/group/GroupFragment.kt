@@ -117,6 +117,7 @@ class GroupFragment : Fragment() {
                 adapter!!.setOnItemClickListener(object : ListGroupAdapter.ItemClickListener{
                     override fun onItemClick(position: Int) {
                         val bundle = Bundle()
+                        bundle.putBoolean(StaticConfig.INTENT_KEY_CHAT_IS_GROUP, true)
                         bundle.putString(StaticConfig.INTENT_KEY_CHAT_ROOM_ID, viewModel.listGroup[position].id)
                         bundle.putString(StaticConfig.INTENT_KEY_CHAT_FRIEND, viewModel.listGroup[position].name)
                         bundle.putString(StaticConfig.INTENT_KEY_CHAT_AVATA, viewModel.listGroup[position].avatar)
@@ -142,6 +143,7 @@ class GroupFragment : Fragment() {
                             }
 
                         }
+
                         bundle.putCharSequenceArrayList(StaticConfig.INTENT_KEY_CHAT_ID, listId)
                         findNavController().navigate(R.id.action_global_chatFragment,bundle)
                     }

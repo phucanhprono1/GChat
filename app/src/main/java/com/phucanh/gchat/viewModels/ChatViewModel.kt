@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -35,12 +36,16 @@ import javax.inject.Inject
 class ChatViewModel @Inject constructor(val userReference: DatabaseReference,val firebaseDatabase: FirebaseDatabase,application: Application) : AndroidViewModel(application) {
     // TODO: Implement the ViewModel
     var mapAvatar = mutableMapOf<String,String>()
+    var avatar = ""
     var listMessage = MutableLiveData<Conversation>()
+    var friendids = ArrayList<CharSequence>()
     var conversation = Conversation()
     var imgUri:Uri? = null
     var imgUriLink = ""
     var roomId: String = ""
     var roomName: String = ""
+    var isChat:Boolean? = false
+    var isGroupChat:Boolean? = false
 
     fun getListMessage(idRoom: String) {
 
@@ -83,7 +88,7 @@ class ChatViewModel @Inject constructor(val userReference: DatabaseReference,val
     fun sendMessage(content: String, idRoom: String, type: Int, receiverId: ArrayList<CharSequence>,fileName:String?){
         val message: Message = Message()
         message.content = content
-        message.idSender =  StaticConfig.UID
+        message.idSender = FirebaseAuth.getInstance().currentUser?.uid.toString()
         message.type = type
         message.timestamp = System.currentTimeMillis()
         message.nameSender = StaticConfig.NAME
@@ -166,8 +171,16 @@ class ChatViewModel @Inject constructor(val userReference: DatabaseReference,val
             val jsonObject = JSONObject()
             val notificationObj = JSONObject()
             notificationObj.put("title", roomName)
-            notificationObj.put("body", "${StaticConfig.NAME}: $notificationMessage")
-            val dataObj = JSONObject()
+            val dataObj1 = JSONObject()
+            dataObj1.put("roomId", roomId)
+            dataObj1.put("friendids", friendids)
+            dataObj1.put("name", roomName)
+            dataObj1.put("avatar", avatar)
+            dataObj1.put("message", notificationMessage)
+            dataObj1.put("isChat", true)
+            dataObj1.put("isGroupChat", isGroupChat)
+            notificationObj.put("body", dataObj1)
+
             jsonObject.put("notification", notificationObj)
             jsonObject.put("to", fcmToken)
             // Tạo kết nối HTTP để gửi thông báo đẩy
