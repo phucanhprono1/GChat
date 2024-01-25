@@ -159,15 +159,6 @@ class ChatViewModel @Inject constructor(val userReference: DatabaseReference,val
             "Preparing to send notification with token: $fcmToken $notificationMessage"
         )
         try {
-//            JSONObject notification = new JSONObject();
-//            notification.put("title", StaticConfig.NAME); // Tiêu đề thông báo
-//            notification.put("body", notificationMessage); // Nội dung thông báo
-//
-//            JSONObject message = new JSONObject();
-//            message.put("token", fcmToken); // FCM token của người nhận
-//            message.put("notification", notification);
-//            JSONObject sending = new JSONObject();
-//            sending.put("message", message);
             val jsonObject = JSONObject()
             val notificationObj = JSONObject()
             notificationObj.put("title", roomName)

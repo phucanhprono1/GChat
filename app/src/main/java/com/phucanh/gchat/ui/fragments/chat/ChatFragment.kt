@@ -44,6 +44,7 @@ import com.google.firebase.storage.UploadTask
 import com.phucanh.gchat.R
 import com.phucanh.gchat.databinding.ActivityMainBinding
 import com.phucanh.gchat.databinding.FragmentChatBinding
+import com.phucanh.gchat.models.User
 import com.phucanh.gchat.ui.MainActivity
 import com.phucanh.gchat.utils.StaticConfig
 import com.phucanh.gchat.viewModels.ChatViewModel
@@ -61,6 +62,8 @@ class ChatFragment : Fragment() {
         val VIEW_TYPE_FRIEND_MESSAGE = 1
 
     }
+    @Inject
+    lateinit var firebaseDatabase: FirebaseDatabase
     private var uid: String = ""
     private lateinit var currentUserDB: DatabaseReference
     private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
@@ -171,7 +174,26 @@ class ChatFragment : Fragment() {
             viewModel.listMessage.value = null
             viewModel.listMessage.removeObservers(viewLifecycleOwner)
         }
+        for (id in arguments?.getCharSequenceArrayList(StaticConfig.INTENT_KEY_CHAT_ID)!!) {
+            if(id.toString() == StaticConfig.UID){
+                continue
+            }
+            firebaseDatabase.reference.child("users/$id").addValueEventListener(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val user = snapshot.getValue(User::class.java)
+                    if(user!=null){
+                        viewModel.mapAvatar[user.id] = user.avata.toString()
+                        Log.d("GroupFragment", "onDataChange: ${user.avata}")
+                    }
+                }
 
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("GroupFragment", "onCancelled: ${error.message}")
+                }
+
+            })
+        }
 
        // listMessageAdapter = ListMessageAdapter(requireContext(), null, mapAvataFriend, StaticConfig.AVATA)
         viewModel.getListMessage(viewModel.roomId!!)
@@ -206,7 +228,7 @@ class ChatFragment : Fragment() {
         }
         binding.btnSend.setOnClickListener {
             if(binding.editWriteMessage.text.toString().trim().isNotEmpty()){
-                viewModel.sendMessage(binding.editWriteMessage.text.toString().trim(), viewModel.roomId, 0,idFriend!!,null)
+                viewModel.sendMessage(binding.editWriteMessage.text.toString().trim(), viewModel.roomId, 0,idFriend,null)
                 binding.editWriteMessage.setText("")
                 if(viewModel.conversation.listMessageData.size>0){
                     binding.recyclerChat.scrollToPosition(listMessageAdapter!!.itemCount - 1)

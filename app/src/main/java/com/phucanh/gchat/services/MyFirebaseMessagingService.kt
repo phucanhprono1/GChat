@@ -32,12 +32,18 @@ import com.phucanh.gchat.viewModels.ChatViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+
+
 @AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     @Inject
     lateinit var chatViewModel: ChatViewModel
     @Inject
     lateinit var firebaseDatabase: FirebaseDatabase
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
+        Log.d("MyFirebaseMessagingService", "onNewToken: $token")
+    }
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         val title = remoteMessage.notification!!.title
