@@ -28,7 +28,7 @@ object ServiceUtils {
     fun updateUserStatus(context: Context) {
         if (isNetworkConnected(context)) {
             val uid = FirebaseAuth.getInstance().currentUser?.uid
-            if (uid != "") {
+            if (uid != null) {
                 FirebaseDatabase.getInstance("https://gchat-af243-default-rtdb.asia-southeast1.firebasedatabase.app/")
                     .getReference("users/$uid/status/isOnline")
                     .setValue(true)
