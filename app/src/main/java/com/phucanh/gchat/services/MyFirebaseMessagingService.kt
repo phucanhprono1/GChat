@@ -71,27 +71,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         bundle.putString(StaticConfig.INTENT_KEY_CHAT_AVATA, noti.avatar)
         bundle.putString(StaticConfig.INTENT_KEY_CHAT_ROOM_ID, noti.roomId)
         bundle.putCharSequenceArrayList(StaticConfig.INTENT_KEY_CHAT_ID, stringToCharSequenceList(noti.friendids))
-        val arrIdFriend = ServiceUtils.stringToCharSequenceList(noti.friendids)
-        chatViewModel.mapAvatar = HashMap()
-
-        for (id in arrIdFriend) {
-
-            firebaseDatabase.reference.child("users/$id").addValueEventListener(object :
-                ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val user = snapshot.getValue(User::class.java)
-                    if(user!=null){
-                        chatViewModel.mapAvatar[user.id] = user.avata.toString()
-                        Log.d("GroupFragment", "onDataChange: ${user.avata}")
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.d("GroupFragment", "onCancelled: ${error.message}")
-                }
-
-            })
-        }
 
         val pendingIntent = NavDeepLinkBuilder(applicationContext)
             .setComponentName(MainActivity::class.java)
